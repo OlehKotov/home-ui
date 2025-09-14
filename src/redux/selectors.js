@@ -1,0 +1,9 @@
+export const selectUserName = (state) => state.user.name;
+export const selectUserEmail = (state) => state.user.email;
+export const selectUserPhone = (state) => state.user.phone;
+export const selectUserApartmentNumber = (state) => state.user.apartmentNumber;
+export const selectUserRole = (state) => state.user.role;
+export const selectAccessToken = (state) => state.user.accessToken;
+export const selectIsLoggedIn = (state) => state.isLoggedIn;
+export const selectIsLoading = (state) => state.isLoading;
+export const selectIsError = (state) => state.isError;
