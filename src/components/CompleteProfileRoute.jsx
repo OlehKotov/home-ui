@@ -1,13 +1,18 @@
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
+import { selectIsDraftUser, selectIsLoggedIn, selectUserEmail, selectUserId } from "../redux/selectors";
 
 const CompleteProfileRoute = ({ children, redirectTo = "/" }) => {
-  const user = useSelector((state) => state.auth.user);
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const userEmail = useSelector(selectUserEmail);
+  const userId = useSelector(selectUserId);
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const isDraftUser = useSelector(selectIsDraftUser);
 
-  const canAccess = user.email && user.id && !isLoggedIn;
+  const canAccess = isDraftUser && userEmail && userId;
 
-  return canAccess ? children : <Navigate to={isLoggedIn ? "/profile" : redirectTo} replace />;
+  return canAccess
+    ? children
+    : <Navigate to={isLoggedIn ? "/profile" : redirectTo} replace />;
 };
 
 export default CompleteProfileRoute;

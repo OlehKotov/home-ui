@@ -12,6 +12,7 @@ const initialState = {
     id: null,
   },
   isLoggedIn: false,
+  isDraftUser: false,
   isLoading: false,
   isError: false,
 };
@@ -24,6 +25,7 @@ const userSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isLoggedIn = false;
+        state.isDraftUser = true;
         state.user.email = action.payload.email;
         state.user.role = action.payload.role;
         state.user.id = action.payload._id;
@@ -33,6 +35,7 @@ const userSlice = createSlice({
       .addCase(completeProfile.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isLoggedIn = true;
+        state.isDraftUser = false; 
         state.user.name = action.payload.name;
         state.user.phone = action.payload.phone;
         state.user.apartmentId = action.payload.apartmentId;
