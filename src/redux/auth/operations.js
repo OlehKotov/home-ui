@@ -1,16 +1,12 @@
 import axios from "axios";
-import { createAsyncThunk } from "@reduxjs/toolkit"; 
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const instance = axios.create({
   baseURL: "https://home-mongodb-1.onrender.com",
 });
-
 export const setToken = (token) => {
   instance.defaults.headers.common.Authorization = `Bearer ${token}`;
 };
-
-
-
 export const clearToken = () =>
   (instance.defaults.headers.common.Authorization = "");
 
@@ -20,17 +16,60 @@ export const registerUser = createAsyncThunk(
     try {
       const { data } = await instance.post("/auth/register", userData);
 
-       if (data.data.accessToken) {
+      if (data.data.accessToken) {
         setToken(data.data.accessToken);
       }
 
-      return data.data; 
+      return data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
 
+export const completeProfile = createAsyncThunk(
+  "auth/completeProfile",
+  async (userData, { getState, rejectWithValue }) => {
+    const state = getState();
+    const token = state.auth.user.accessToken;
+
+    try {
+      if (token) {
+        setToken(token);
+      }
+      console.log(token);
+
+      const { data } = await instance.patch("/auth/complete-profile", userData);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const logout = createAsyncThunk(
+  "auth/logout",
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const state = getState();
+      const token = state.auth.user.accessToken;
+
+      if (!token) {
+        clearToken();
+        return;
+      }
+      setToken(token);
+      await instance.post("/auth/logout");
+      clearToken();
+
+      return;
+    } catch (error) {
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
 
 // export const logoutUser = createAsyncThunk('auth/logout', async (_, thunkAPI) => {
 //   try {
