@@ -10,6 +10,7 @@ export const setToken = (token) => {
 export const clearToken = () =>
   (instance.defaults.headers.common.Authorization = "");
 
+
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (userData, { rejectWithValue }) => {
@@ -47,7 +48,22 @@ export const completeProfile = createAsyncThunk(
   }
 );
 
-export const logout = createAsyncThunk(
+export const loginUser = createAsyncThunk(
+  "auth/login",
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await instance.post("/auth/login", userData);
+      console.log("Login response:", response);
+      setToken(response.data.data.accessToken);
+      return response.data.data; 
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+
+export const logoutUser = createAsyncThunk(
   "auth/logout",
   async (_, { getState, rejectWithValue }) => {
     try {
@@ -71,16 +87,7 @@ export const logout = createAsyncThunk(
   }
 );
 
-// export const logoutUser = createAsyncThunk('auth/logout', async (_, thunkAPI) => {
-//   try {
-//     const res = await axios.post('/users/logout');
-//     clearAuthHeader();
-//     localStorage.removeItem('accessToken');
-//     return res.data;
-//   } catch (error) {
-//     return thunkAPI.rejectWithValue(error.message);
-//   }
-// });
+
 
 // export const updateUser = createAsyncThunk('auth/update', async (data, thunkAPI) => {
 //   try {

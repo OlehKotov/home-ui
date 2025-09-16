@@ -1,5 +1,10 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
-import { completeProfile, logout, registerUser } from "./operations";
+import {
+  completeProfile,
+  logoutUser,
+  loginUser,
+  registerUser,
+} from "./operations";
 
 const initialState = {
   user: {
@@ -9,7 +14,7 @@ const initialState = {
     accessToken: null,
     apartmentId: null,
     role: null,
-    id: null,
+    _id: null,
   },
   isLoggedIn: false,
   isDraftUser: false,
@@ -28,42 +33,37 @@ const userSlice = createSlice({
         state.isDraftUser = true;
         state.user.email = action.payload.email;
         state.user.role = action.payload.role;
-        state.user.id = action.payload._id;
+        state.user._id = action.payload._id;
         state.user.apartmentId = action.payload.apartmentId;
         state.user.accessToken = action.payload.accessToken || null;
       })
       .addCase(completeProfile.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isLoggedIn = true;
-        state.isDraftUser = false; 
+        state.isDraftUser = false;
         state.user.name = action.payload.name;
         state.user.phone = action.payload.phone;
         state.user.apartmentId = action.payload.apartmentId;
       })
-      .addCase(logout.fulfilled, () => initialState)
-
-      // .addCase(login.fulfilled, (state, action) => {
-      //   state.isLoading = false;
-      //   state.isLoggedIn = true;
-      //   state.user.name = action.payload.name;
-      //   state.user.email = action.payload.email;
-      //   state.user.token = action.payload.token;
-      // })
-
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isLoggedIn = true;
+        state.isDraftUser = false;
+        state.user.name = action.payload.name;
+        state.user.phone = action.payload.phone;
+        state.user.apartmentId = action.payload.apartmentId;
+        state.user.email = action.payload.email;
+        state.user.role = action.payload.role;
+        state.user.accessToken = action.payload.accessToken;
+        state.user._id = action.payload._id;
+      })
+      .addCase(logoutUser.fulfilled, () => initialState)
       .addMatcher(
         isAnyOf(
           registerUser.pending,
           completeProfile.pending,
-          logout.pending
-          // login.pending,
-          // currentUserFull.pending,
-
-          // editUser.pending,
-          // addPet.pending,
-          // deletePet.pending,
-          // addFavoriteNotice.pending,
-          // deleteFavoriteNotice.pending,
-          // addNoticeToViewed.pending
+          loginUser.pending,
+          logoutUser.pending
         ),
         (state) => {
           state.isLoading = true;
@@ -74,15 +74,8 @@ const userSlice = createSlice({
         isAnyOf(
           registerUser.rejected,
           completeProfile.rejected,
-          logout.rejected
-          // login.rejected,
-          // currentUserFull.rejected,
-          // editUser.rejected,
-          // addPet.rejected,
-          // deletePet.rejected,
-          // addFavoriteNotice.rejected,
-          // deleteFavoriteNotice.rejected,
-          // addNoticeToViewed.rejected
+          loginUser.rejected,
+          logoutUser.rejected
         ),
         (state) => {
           state.isLoading = false;

@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import css from "./CompleteProfile.module.css";
 import { useDispatch } from "react-redux";
 import { completeProfile } from "../../redux/auth/operations";
@@ -48,7 +48,7 @@ const CompleteProfile = () => {
         position: "top-center",
       });
       reset();
-      navigate("/profile");
+      navigate("/dashboard");
     } catch (error) {
       toast.error(error.message || "Registration failed", {
         duration: 4000,

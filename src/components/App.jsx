@@ -9,8 +9,9 @@ import { Toaster } from 'react-hot-toast';
 import RestrictedRoute from './RestrictedRoute';
 import PrivateRoute from './PrivateRoute';
 import CompleteProfilePage from '../pages/CompleteProfilePage/CompleteProfilePage';
-import ProfilePage from '../pages/ProfilePage/ProfilePage';
 import CompleteProfileRoute from './CompleteProfileRoute';
+import SignInPage from '../pages/SignInPage/SignInPage';
+import DashboardPage from '../pages/DashboardPage/DashboardPage';
 
 function App() {
 
@@ -37,10 +38,18 @@ function App() {
           }
         />
         <Route
-          path="/profile"
+          path="/signin"
+          element={
+            <RestrictedRoute>
+              <SignInPage />
+            </RestrictedRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
           element={
             <PrivateRoute>
-              <ProfilePage />
+              <DashboardPage />
             </PrivateRoute>
           }
         />

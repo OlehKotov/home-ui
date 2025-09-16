@@ -6,7 +6,7 @@ const RestrictedRoute = ({ children }) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const isDraftUser = useSelector(selectIsDraftUser);
   return isLoggedIn 
-    ? <Navigate to="/profile" replace />
+    ? <Navigate to="/dashboard" replace />
     : isDraftUser 
       ? <Navigate to="/complete-profile" replace />
       : children;

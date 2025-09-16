@@ -12,7 +12,7 @@ const CompleteProfileRoute = ({ children, redirectTo = "/" }) => {
 
   return canAccess
     ? children
-    : <Navigate to={isLoggedIn ? "/profile" : redirectTo} replace />;
+    : <Navigate to={isLoggedIn ? "/dashboard" : redirectTo} replace />;
 };
 
 export default CompleteProfileRoute;
