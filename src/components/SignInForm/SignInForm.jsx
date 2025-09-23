@@ -8,7 +8,7 @@ import { loginUser } from "../../redux/auth/operations";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
-// import GoogleAuth from '../GoogleAuth/GoogleAuth';
+import GoogleAuth from "../GoogleAuth/GoogleAuth";
 
 const SignInForm = () => {
   const dispatch = useDispatch();
@@ -114,9 +114,10 @@ const SignInForm = () => {
           <button className={css.submitButton} type="submit">
             Sign In
           </button>
+          <GoogleAuth linkText={"Sign in with Google"} />
         </div>
       </form>
-      {/* <GoogleAuth linkText={"Sign up with Google"}/> */}
+      
       <div className={css.textWrapper}>
         Don’t have an account?
         <NavLink className={css.link} to="/signup">

@@ -5,7 +5,6 @@ const Logo = () => {
   return (
     <div>
        <Link
-        // data-tour="welcome-step"
         className={css.logo}
         to="/"
       >

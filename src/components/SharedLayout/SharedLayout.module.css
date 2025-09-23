@@ -1,0 +1,29 @@
+.sharedContainer {
+  width: 100%;
+  max-width: 1440px;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.loaderWrapper {
+  position: fixed; 
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center; 
+  align-items: center;    
+  background-color: rgba(255, 255, 255, 0.7); 
+  z-index: 9999;        
+}
+
+
+@media (min-width: 768px) {
+  .sharedContainer {
+    padding-right: 32px;
+    padding-left: 32px;
+  }
+}

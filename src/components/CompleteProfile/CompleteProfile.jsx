@@ -1,32 +1,42 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import css from "./CompleteProfile.module.css";
-import { useDispatch } from "react-redux";
-import { completeProfile } from "../../redux/auth/operations";
+import { useDispatch, useSelector } from "react-redux";
+import { completeProfile, deleteUserAndLogout } from "../../redux/auth/operations";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
+import { selectUserId } from "../../redux/selectors";
 
 const CompleteProfile = () => {
+  const userId = useSelector(selectUserId);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
   const validationSchema = Yup.object().shape({
-  name: Yup.string()
-    .matches(/^[A-Za-zА-Яа-яЁё\s'-]+$/, 'Name can contain only letters, spaces, hyphens or apostrophes')
-    .min(3, 'Name must be at least 2 characters')
-    .max(30, 'The name must be no more than 30 characters.')
-    .required('Name is required'),
+    name: Yup.string()
+      .matches(
+        /^[A-Za-zА-Яа-яЁё\s'-]+$/,
+        "Name can contain only letters, spaces, hyphens or apostrophes"
+      )
+      .min(2, "Name must be at least 2 characters")
+      .max(30, "The name must be no more than 30 characters.")
+      .required("Name is required"),
 
-  phone: Yup.string()
-    .matches(/^\+380\d{9}$/, 'Phone must be in format +380XXXXXXXXX')
-    .required('Phone is required'),
+    phone: Yup.string()
+      .matches(/^\+380\d{9}$/, "Phone must be in format +380XXXXXXXXX")
+      .required("Phone is required"),
 
-  apartmentNumber: Yup.number()
-    .required('Apartment number is required'),
-});
+    apartmentNumber: Yup.number()
+      .transform((value, originalValue) =>
+        String(originalValue).trim() === "" ? null : value
+      )
+      .typeError("Apartment number must be a number")
+      .required("Apartment number is required")
+      .max(120, "Apartment number must be no more than 3 digits"),
+  });
 
   const {
     register,
@@ -40,7 +50,11 @@ const CompleteProfile = () => {
   const onSubmit = async (data) => {
     try {
       await dispatch(
-        completeProfile({ name: data.name, phone: data.phone, apartmentNumber: data.apartmentNumber })
+        completeProfile({
+          name: data.name,
+          phone: data.phone,
+          apartmentNumber: data.apartmentNumber,
+        })
       ).unwrap();
 
       toast.success("Profile completed!", {
@@ -57,6 +71,24 @@ const CompleteProfile = () => {
     }
   };
 
+  const handleDeleteUser = async () => {
+    try {
+      if (!userId) {
+        toast.error("User ID not found");
+        return;
+      }
+
+      await dispatch(deleteUserAndLogout(userId)).unwrap();
+
+      toast.success("Account canceled successfully", {
+        position: "top-center",
+      });
+      navigate("/");
+    } catch (error) {
+      console.error("Error cancelling account:", error);
+    }
+  };
+
   return (
     <div className={css.container}>
       <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
@@ -66,15 +98,15 @@ const CompleteProfile = () => {
           <label className={css.label}>Name:</label>
           <div className={css.inputWrapper}>
             <input
-              className={`${css.input} ${errors.email ? css.error : ""}`}
+              className={`${css.input} ${errors.name ? css.error : ""}`}
               type="text"
               name="name"
               placeholder="Enter your name"
               {...register("name")}
             />
           </div>
-          {errors.email && (
-            <p className={css.errorMessage}>{errors.email.message}</p>
+          {errors.name && (
+            <p className={css.errorMessage}>{errors.name.message}</p>
           )}
         </div>
 
@@ -82,15 +114,15 @@ const CompleteProfile = () => {
           <label className={css.label}>Phone:</label>
           <div className={css.inputWrapper}>
             <input
-              className={`${css.input} ${errors.password ? css.error : ""}`}
+              className={`${css.input} ${errors.phone ? css.error : ""}`}
               type="text"
               name="phone"
               placeholder="Enter your phone"
               {...register("phone")}
             />
           </div>
-          {errors.password && (
-            <p className={css.errorMessage}>{errors.password.message}</p>
+          {errors.phone && (
+            <p className={css.errorMessage}>{errors.phone.message}</p>
           )}
         </div>
 
@@ -98,15 +130,17 @@ const CompleteProfile = () => {
           <label className={css.label}>Apartment Number:</label>
           <div className={css.inputWrapper}>
             <input
-              className={`${css.input} ${errors.password ? css.error : ""}`}
+              className={`${css.input} ${
+                errors.apartmentNumber ? css.error : ""
+              }`}
               type="number"
               name="apartmentNumber"
               placeholder="Enter your apartment number"
               {...register("apartmentNumber")}
             />
           </div>
-          {errors.password && (
-            <p className={css.errorMessage}>{errors.password.message}</p>
+          {errors.apartmentNumber && (
+            <p className={css.errorMessage}>{errors.apartmentNumber.message}</p>
           )}
         </div>
         <div className={css.buttonWrapper}>
@@ -115,6 +149,12 @@ const CompleteProfile = () => {
           </button>
         </div>
       </form>
+      <div className={css.textWrapper}>
+        Don’t want to complete profile?
+        <NavLink className={css.link} onClick={handleDeleteUser}>
+          Cancel
+        </NavLink>
+      </div>
     </div>
   );
 };

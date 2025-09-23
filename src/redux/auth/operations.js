@@ -3,13 +3,16 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const instance = axios.create({
   baseURL: "https://home-mongodb-1.onrender.com",
+  // baseURL: "http://localhost:3000",
+  withCredentials: true,
 });
+
 export const setToken = (token) => {
   instance.defaults.headers.common.Authorization = `Bearer ${token}`;
 };
+
 export const clearToken = () =>
   (instance.defaults.headers.common.Authorization = "");
-
 
 export const registerUser = createAsyncThunk(
   "auth/register",
@@ -53,80 +56,76 @@ export const loginUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await instance.post("/auth/login", userData);
-      console.log("Login response:", response);
       setToken(response.data.data.accessToken);
-      return response.data.data; 
+      return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
 
-
-export const logoutUser = createAsyncThunk(
-  "auth/logout",
-  async (_, { getState, rejectWithValue }) => {
+export const loginUserGoogle = createAsyncThunk(
+  "auth/loginGoogleOAuth",
+  async (code, { dispatch, rejectWithValue }) => {
     try {
-      const state = getState();
-      const token = state.auth.user.accessToken;
-
-      if (!token) {
-        clearToken();
-        return;
-      }
-      setToken(token);
-      await instance.post("/auth/logout");
-      clearToken();
-
-      return;
-    } catch (error) {
-      return rejectWithValue(
-        error.response ? error.response.data : error.message
+      const response = await instance.post(
+        "/auth/confirm-oauth",
+        { code },
+        { withCredentials: true }
       );
+
+      const userData = response.data.data;
+
+      localStorage.setItem("accessToken", userData.accessToken);
+      setToken(userData.accessToken);
+      return userData;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
 
+export const logoutUser = createAsyncThunk(
+  "auth/logout",
+  async (_, { getState, rejectWithValue }) => {
+    const state = getState();
+    const token = state.auth.user.accessToken;
 
+    if (token) {
+      setToken(token);
+    }
+    try {
+      await instance.post("/auth/logout", null, { withCredentials: true });
 
-// export const updateUser = createAsyncThunk('auth/update', async (data, thunkAPI) => {
-//   try {
-//     const res = await axios.patch('/users/update', data, {
-//       headers: {
-//         'Content-Type': 'multipart/form-data',
-//       },
-//     });
+      clearToken();
+      localStorage.removeItem("accessToken");
+      sessionStorage.removeItem("googleAuthDone");
 
-//     return res.data;
-//   } catch (error) {
-//     return thunkAPI.rejectWithValue(error.message);
-//   }
-// });
+      return;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 
-// export const getAllUsers = createAsyncThunk('auth/getAllUsers', async (_, thunkAPI) => {
-//   try {
-//     const res = await axios.get('/users/registered-users');
+export const deleteUserAndLogout = createAsyncThunk(
+  "auth/deleteUserAndLogout",
+  async (userId, { getState, rejectWithValue }) => {
+    const state = getState();
+    const token = state.auth.user.accessToken;
 
-//     return res.data.data;
-//   } catch (error) {
-//     return thunkAPI.rejectWithValue(error.message);
-//   }
-// });
+    if (!userId) return rejectWithValue("User ID is required");
 
-// export const loginUserGoogle = createAsyncThunk('auth/loginGoogle', async (_, thunkAPI) => {
-//   try {
-//     const persistedToken = localStorage.getItem('accessToken');
+    if (token) {
+      setToken(token);
+    }
 
-//     if (persistedToken === null) {
-//       return thunkAPI.rejectWithValue('Unable to fetch user');
-//     }
+    try {
+      await instance.delete(`/users/me/${userId}`, { withCredentials: true });
 
-//     setAuthHeader(persistedToken);
-
-//     const res = await axios.get('/users/current-user-data');
-
-//     return res.data.data;
-//   } catch (error) {
-//     return thunkAPI.rejectWithValue(error.message);
-//   }
-// });
+      return;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

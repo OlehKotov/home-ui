@@ -4,6 +4,8 @@ import {
   logoutUser,
   loginUser,
   registerUser,
+  loginUserGoogle,
+  deleteUserAndLogout,
 } from "./operations";
 
 const initialState = {
@@ -57,12 +59,27 @@ const userSlice = createSlice({
         state.user.accessToken = action.payload.accessToken;
         state.user._id = action.payload._id;
       })
+      .addCase(loginUserGoogle.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isLoggedIn = true;
+        state.isDraftUser = false;
+        state.user.name = action.payload.name;
+        state.user.phone = action.payload.phone;
+        state.user.apartmentId = action.payload.apartmentId;
+        state.user.email = action.payload.email;
+        state.user.role = action.payload.role;
+        state.user.accessToken = action.payload.accessToken;
+        state.user._id = action.payload._id;
+      })
+      .addCase(deleteUserAndLogout.fulfilled, () => initialState)
       .addCase(logoutUser.fulfilled, () => initialState)
       .addMatcher(
         isAnyOf(
           registerUser.pending,
           completeProfile.pending,
           loginUser.pending,
+          loginUserGoogle.pending,
+          deleteUserAndLogout.pending,
           logoutUser.pending
         ),
         (state) => {
@@ -75,6 +92,8 @@ const userSlice = createSlice({
           registerUser.rejected,
           completeProfile.rejected,
           loginUser.rejected,
+          loginUserGoogle.rejected,
+          deleteUserAndLogout.rejected,
           logoutUser.rejected
         ),
         (state) => {

@@ -1,14 +1,19 @@
-import { NavLink } from 'react-router-dom';
-import css from './Navigation.module.css';
+import { NavLink } from "react-router-dom";
+import css from "./Navigation.module.css";
 
 const Navigation = () => {
+  const getClass = (isSignup) => ({ isActive }) =>
+    isSignup
+      ? `${css.navButtonSignup} ${isActive ? css.active : ""}`
+      : `${css.navButtonSignin} ${isActive ? css.active : ""}`;
+
   return (
-    <div className={css.backdrop}>
-      <nav className={css.navlist}>
-        <NavLink className={css.navButtonSignup} to="/signup">
-          Try tracker
+    <div className={css.navContainer}>
+      <nav className={css.navList}>
+        <NavLink to="/signup" className={getClass(true)}>
+          Try Tracker
         </NavLink>
-        <NavLink className={css.navButtonSignin} to="/signin">
+        <NavLink to="/signin" className={getClass(false)}>
           Sign In
         </NavLink>
       </nav>
