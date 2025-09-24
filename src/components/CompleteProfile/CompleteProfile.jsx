@@ -1,17 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
 import css from "./CompleteProfile.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { completeProfile, deleteUserAndLogout } from "../../redux/auth/operations";
+import {
+  completeProfile,
+  deleteUserAndLogout,
+} from "../../redux/auth/operations";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
 import { selectUserId } from "../../redux/selectors";
+import ModalBackdrop from "../../shared/components/ModalBackdrop/ModalBackdrop";
+import ConfirmDeleteModal from "../../shared/components/ConfirmDeleteModal/ConfirmDeleteModal";
 
 const CompleteProfile = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const userId = useSelector(selectUserId);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -71,13 +76,25 @@ const CompleteProfile = () => {
     }
   };
 
+  const handleCancelClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    await handleDeleteUser();
+    setIsModalOpen(false);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   const handleDeleteUser = async () => {
     try {
       if (!userId) {
         toast.error("User ID not found");
         return;
       }
-
       await dispatch(deleteUserAndLogout(userId)).unwrap();
 
       toast.success("Account canceled successfully", {
@@ -151,10 +168,16 @@ const CompleteProfile = () => {
       </form>
       <div className={css.textWrapper}>
         Don’t want to complete profile?
-        <NavLink className={css.link} onClick={handleDeleteUser}>
+        <NavLink className={css.link} onClick={handleCancelClick}>
           Cancel
         </NavLink>
       </div>
+      <ModalBackdrop isOpen={isModalOpen} onRequestClose={handleCloseModal} closeTimeoutMS={300}>
+        <ConfirmDeleteModal
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCloseModal}
+        />
+      </ModalBackdrop>
     </div>
   );
 };
