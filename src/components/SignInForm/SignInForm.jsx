@@ -42,10 +42,7 @@ const SignInForm = () => {
         loginUser({ email: data.email, password: data.password })
       ).unwrap();
 
-      toast.success("Login successful!", {
-        duration: 4000,
-        position: "top-center",
-      });
+      toast.success("Login successful!");
 
       reset();
       navigate("/dashboard");
@@ -114,7 +111,7 @@ const SignInForm = () => {
           <button className={css.submitButton} type="submit">
             Sign In
           </button>
-          <GoogleAuth linkText={"Sign in with Google"} />
+          <GoogleAuth/>
         </div>
       </form>
       

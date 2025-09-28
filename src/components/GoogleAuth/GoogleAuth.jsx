@@ -89,7 +89,11 @@ const GoogleAuth = () => {
     sessionStorage.setItem("googleAuthDone", "true");
     dispatch(loginUserGoogle(code))
       .unwrap()
-      .then(() => navigate("/dashboard", { replace: true }))
+      .then(() => {
+        window.history.replaceState({}, document.title, "/dashboard");
+        toast.success("Login successful!");
+        navigate("/dashboard", { replace: true });
+      })
       .catch((err) => console.error(err));
   }, [dispatch, navigate, isLoggedIn]);
 

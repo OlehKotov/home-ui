@@ -24,7 +24,7 @@ function App() {
     <LoaderOverlay />
   ) : (
     <SharedLayout>
-      <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
+      <Toaster position="top-center" toastOptions={{ duration: 2000 }} />
       <HelmetProvider>
         <Routes>
           <Route

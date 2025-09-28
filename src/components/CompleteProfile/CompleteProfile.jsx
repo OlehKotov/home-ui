@@ -4,19 +4,23 @@ import { NavLink, useNavigate } from "react-router-dom";
 import css from "./CompleteProfile.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  completeProfile,
-  deleteUserAndLogout,
+  // completeProfile,
+  // deleteUserAndLogout,
+  registerUser,
 } from "../../redux/auth/operations";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
-import { selectUserId } from "../../redux/selectors";
+import { selectDraftEmail, selectDraftPassword } from "../../redux/selectors";
 import ModalBackdrop from "../../shared/components/ModalBackdrop/ModalBackdrop";
 import ConfirmDeleteModal from "../../shared/components/ConfirmDeleteModal/ConfirmDeleteModal";
+import { clearDraftUser } from "../../redux/auth/slice";
 
 const CompleteProfile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const userId = useSelector(selectUserId);
+  // const userId = useSelector(selectUserId);
+  const email = useSelector(selectDraftEmail);
+  const password = useSelector(selectDraftPassword);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -52,59 +56,89 @@ const CompleteProfile = () => {
     resolver: yupResolver(validationSchema),
   });
 
+  // const onSubmit = async (data) => {
+  //   try {
+  //     await dispatch(
+  //       registerUser({
+  //         name: data.name,
+  //         phone: data.phone,
+  //         apartmentNumber: data.apartmentNumber,
+  //       })
+  //     ).unwrap();
+
+  //     toast.success("Profile completed!", {
+  //       duration: 4000,
+  //       position: "top-center",
+  //     });
+  //     reset();
+  //     navigate("/dashboard");
+  //   } catch (error) {
+  //     toast.error(error.message || "Registration failed", {
+  //       duration: 4000,
+  //       position: "top-center",
+  //     });
+  //   }
+  // };
+
   const onSubmit = async (data) => {
     try {
-      await dispatch(
-        completeProfile({
-          name: data.name,
-          phone: data.phone,
-          apartmentNumber: data.apartmentNumber,
-        })
-      ).unwrap();
+      await dispatch(registerUser({ email, password, ...data })).unwrap();
 
-      toast.success("Profile completed!", {
-        duration: 4000,
-        position: "top-center",
-      });
+      toast.success("Profile completed!");
       reset();
       navigate("/dashboard");
     } catch (error) {
-      toast.error(error.message || "Registration failed", {
-        duration: 4000,
-        position: "top-center",
-      });
-    }
+    // let message = "Registration failed";
+
+    // if (error.payload) {
+    //   if (typeof error.payload === "string") {
+    //     message = error.payload;
+    //   } else if (typeof error.payload === "object") {
+    //     if (error.payload.message) {
+    //       message = error.payload.message;
+    //     } else if (error.payload.errors) {
+    //       message = error.payload.errors.map(e => e.message).join(", ");
+    //     }
+    //   }
+    // } else if (error.message) {
+    //   message = error.message;
+    // }
+
+    toast.error(error.message);
+  }
   };
 
   const handleCancelClick = () => {
     setIsModalOpen(true);
   };
 
-  const handleConfirmDelete = async () => {
-    await handleDeleteUser();
+  const handleCancelUser = () => {
+    dispatch(clearDraftUser());
     setIsModalOpen(false);
+    toast.success("Profile completion canceled");
+    navigate("/signin");
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
 
-  const handleDeleteUser = async () => {
-    try {
-      if (!userId) {
-        toast.error("User ID not found");
-        return;
-      }
-      await dispatch(deleteUserAndLogout(userId)).unwrap();
+  // const handleCancelUser = async () => {
+  //   try {
+  //     if (!userId) {
+  //       toast.error("User ID not found");
+  //       return;
+  //     }
+  //     await dispatch(deleteUserAndLogout(userId)).unwrap();
 
-      toast.success("Account canceled successfully", {
-        position: "top-center",
-      });
-      navigate("/");
-    } catch (error) {
-      console.error("Error cancelling account:", error);
-    }
-  };
+  //     toast.success("Your account was canceled and deleted successfully", {
+  //       position: "top-center",
+  //     });
+  //     navigate("/");
+  //   } catch (error) {
+  //     console.error("Error cancelling account:", error);
+  //   }
+  // };
 
   return (
     <div className={css.container}>
@@ -172,9 +206,13 @@ const CompleteProfile = () => {
           Cancel
         </NavLink>
       </div>
-      <ModalBackdrop isOpen={isModalOpen} onRequestClose={handleCloseModal} closeTimeoutMS={300}>
+      <ModalBackdrop
+        isOpen={isModalOpen}
+        onRequestClose={handleCloseModal}
+        closeTimeoutMS={300}
+      >
         <ConfirmDeleteModal
-          onConfirm={handleConfirmDelete}
+          onConfirm={handleCancelUser}
           onCancel={handleCloseModal}
         />
       </ModalBackdrop>

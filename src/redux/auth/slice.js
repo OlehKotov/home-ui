@@ -1,17 +1,20 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
 import {
-  completeProfile,
   logoutUser,
   loginUser,
   registerUser,
   loginUserGoogle,
-  deleteUserAndLogout,
 } from "./operations";
 
 const initialState = {
+  draftUser: {
+    email: null,
+    password: null,
+  },
   user: {
     name: null,
     email: null,
+    password: null,
     phone: null,
     accessToken: null,
     apartmentId: null,
@@ -27,59 +30,43 @@ const initialState = {
 const userSlice = createSlice({
   name: "auth",
   initialState,
+  reducers: {
+    setDraftUser: (state, action) => {
+      state.draftUser.email = action.payload.email;
+      state.draftUser.password = action.payload.password;
+      state.isDraftUser = true;
+    },
+    clearDraftUser: (state) => {
+      state.draftUser.email = null;
+      state.draftUser.password = null;
+      state.isDraftUser = false;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isLoggedIn = false;
-        state.isDraftUser = true;
-        state.user.email = action.payload.email;
-        state.user.role = action.payload.role;
-        state.user._id = action.payload._id;
-        state.user.apartmentId = action.payload.apartmentId;
-        state.user.accessToken = action.payload.accessToken || null;
-      })
-      .addCase(completeProfile.fulfilled, (state, action) => {
-        state.isLoading = false;
         state.isLoggedIn = true;
+        state.user = { ...action.payload };
+        state.draftUser = { email: null, password: null };
         state.isDraftUser = false;
-        state.user.name = action.payload.name;
-        state.user.phone = action.payload.phone;
-        state.user.apartmentId = action.payload.apartmentId;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isLoggedIn = true;
-        state.isDraftUser = false;
-        state.user.name = action.payload.name;
-        state.user.phone = action.payload.phone;
-        state.user.apartmentId = action.payload.apartmentId;
-        state.user.email = action.payload.email;
-        state.user.role = action.payload.role;
-        state.user.accessToken = action.payload.accessToken;
-        state.user._id = action.payload._id;
+        state.user = { ...action.payload };
       })
       .addCase(loginUserGoogle.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isLoggedIn = true;
-        state.isDraftUser = false;
-        state.user.name = action.payload.name;
-        state.user.phone = action.payload.phone;
-        state.user.apartmentId = action.payload.apartmentId;
-        state.user.email = action.payload.email;
-        state.user.role = action.payload.role;
-        state.user.accessToken = action.payload.accessToken;
-        state.user._id = action.payload._id;
+        state.user = { ...action.payload };
       })
-      .addCase(deleteUserAndLogout.fulfilled, () => initialState)
       .addCase(logoutUser.fulfilled, () => initialState)
       .addMatcher(
         isAnyOf(
           registerUser.pending,
-          completeProfile.pending,
           loginUser.pending,
           loginUserGoogle.pending,
-          deleteUserAndLogout.pending,
           logoutUser.pending
         ),
         (state) => {
@@ -90,10 +77,8 @@ const userSlice = createSlice({
       .addMatcher(
         isAnyOf(
           registerUser.rejected,
-          completeProfile.rejected,
           loginUser.rejected,
           loginUserGoogle.rejected,
-          deleteUserAndLogout.rejected,
           logoutUser.rejected
         ),
         (state) => {
@@ -104,4 +89,5 @@ const userSlice = createSlice({
   },
 });
 
+export const { setDraftUser, clearDraftUser } = userSlice.actions;
 export default userSlice.reducer;

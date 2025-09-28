@@ -4,28 +4,30 @@
   align-items: center;
   gap: 8px;
 
+  background-color: #e5e7eb;
+  border-radius: 30px;
   padding: 16px 16px;
+  width: 130px;
+  height: 50px;
   font-weight: 700;
   font-size: 14px;
+  line-height: 129%;
+  letter-spacing: 0.01em;
   color: #323f47;
-  background-color: #fff;
-
-  border: 1px solid rgba(47, 47, 47, 0.2);
-  border-radius: 30px;
   cursor: pointer;
-
   transition: all 0.3s ease;
 }
 
 .linkGoogle:hover,
 .linkGoogle:focus {
-  box-shadow: inset 0 0 0 2em #c95f03;
+  box-shadow: inset 0 0 0 2em #d1d5db;
 }
 
 @media (min-width: 768px) {
   .linkGoogle {
     font-size: 16px;
     line-height: 150%;
-    width: 436px;
+    width: 136px;
+    height: 60px;
   }
 }

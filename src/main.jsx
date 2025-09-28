@@ -10,6 +10,9 @@ import { Provider } from "react-redux";
 import { persistor } from "./redux/store";
 import store from "./redux/store"; 
 import { PersistGate } from "redux-persist/integration/react";
+import { setupInterceptors } from "./redux/interceptors.js";
+
+setupInterceptors();
 
 
 createRoot(document.getElementById("root")).render(

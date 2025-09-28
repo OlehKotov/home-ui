@@ -4,11 +4,11 @@ import { NavLink, useNavigate } from "react-router-dom";
 import css from "./SignUpForm.module.css";
 import sprite from "../../assets/icons/sprite.svg";
 import { useDispatch } from "react-redux";
-import { registerUser } from "../../redux/auth/operations";
+// import { registerUser } from "../../redux/auth/operations";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
-// import GoogleAuth from '../GoogleAuth/GoogleAuth';
+import { setDraftUser } from "../../redux/auth/slice";
 
 const SignUpForm = () => {
   const dispatch = useDispatch();
@@ -39,26 +39,33 @@ const SignUpForm = () => {
     resolver: yupResolver(validationSchema),
   });
 
-  const onSubmit = async (data) => {
-    try {
-      await dispatch(
-        registerUser({ email: data.email, password: data.password })
-      ).unwrap();
-
-      toast.success("Draft user created!", {
-        duration: 4000,
-        position: "top-center",
-      });
-
-      reset();
-      navigate("/complete-profile");
-    } catch (error) {
-      toast.error(error.message || "Registration failed", {
-        duration: 4000,
-        position: "top-center",
-      });
-    }
+const onSubmit = (data) => {
+    dispatch(setDraftUser({ email: data.email, password: data.password }));
+    toast.success("Continue to complete profile!");
+    reset();
+    navigate("/complete-profile");
   };
+
+  // const onSubmit = async (data) => {
+  //   try {
+  //     await dispatch(
+  //       registerUser({ email: data.email, password: data.password })
+  //     ).unwrap();
+
+  //     toast.success("Draft user created!", {
+  //       duration: 4000,
+  //       position: "top-center",
+  //     });
+
+  //     reset();
+  //     navigate("/complete-profile");
+  //   } catch (error) {
+  //     toast.error(error.message || "Registration failed", {
+  //       duration: 4000,
+  //       position: "top-center",
+  //     });
+  //   }
+  // };
 
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
@@ -153,7 +160,6 @@ const SignUpForm = () => {
           </button>
         </div>
       </form>
-      {/* <GoogleAuth linkText={"Sign up with Google"}/> */}
       <div className={css.textWrapper}>
         Already have an account?
         <NavLink className={css.link} to="/signin">

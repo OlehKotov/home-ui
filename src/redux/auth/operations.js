@@ -1,50 +1,43 @@
-import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { instance, setToken } from "../axios";
 
-export const instance = axios.create({
-  baseURL: "https://home-mongodb-1.onrender.com",
-  // baseURL: "http://localhost:3000",
-  withCredentials: true,
-});
+// export const registerUser = createAsyncThunk(
+//   "auth/register",
+//   async (userData, { rejectWithValue }) => {
+//     try {
+//       const response = await instance.post("/auth/register", userData);
 
-export const setToken = (token) => {
-  instance.defaults.headers.common.Authorization = `Bearer ${token}`;
-};
+//       setToken(response.data.data.accessToken);
 
-export const clearToken = () =>
-  (instance.defaults.headers.common.Authorization = "");
+//       return response.data.data;
+//     } catch (error) {
+//       return rejectWithValue(error.response?.data || error.message);
+//     }
+//   }
+// );
+
+// export const completeProfile = createAsyncThunk(
+//   "auth/completeProfile",
+//   async (userData, { getState, rejectWithValue }) => {
+//     const state = getState();
+//     setToken(state.auth.user.accessToken);
+
+//     try {
+//       const response = await instance.patch("/auth/complete-profile", userData);
+//       return response.data.data;
+//     } catch (error) {
+//       return rejectWithValue(error.response?.data || error.message);
+//     }
+//   }
+// );
 
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (userData, { rejectWithValue }) => {
     try {
-      const { data } = await instance.post("/auth/register", userData);
-
-      if (data.data.accessToken) {
-        setToken(data.data.accessToken);
-      }
-
-      return data.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
-
-export const completeProfile = createAsyncThunk(
-  "auth/completeProfile",
-  async (userData, { getState, rejectWithValue }) => {
-    const state = getState();
-    const token = state.auth.user.accessToken;
-
-    try {
-      if (token) {
-        setToken(token);
-      }
-      console.log(token);
-
-      const { data } = await instance.patch("/auth/complete-profile", userData);
-      return data.data;
+      const response = await instance.post("/auth/register", userData);
+      setToken(response.data.data.accessToken);
+      return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
@@ -66,19 +59,12 @@ export const loginUser = createAsyncThunk(
 
 export const loginUserGoogle = createAsyncThunk(
   "auth/loginGoogleOAuth",
-  async (code, { dispatch, rejectWithValue }) => {
+  async (code, { rejectWithValue }) => {
     try {
-      const response = await instance.post(
-        "/auth/confirm-oauth",
-        { code },
-        { withCredentials: true }
-      );
+      const response = await instance.post("/auth/confirm-oauth", { code });
 
-      const userData = response.data.data;
-
-      localStorage.setItem("accessToken", userData.accessToken);
-      setToken(userData.accessToken);
-      return userData;
+      setToken(response.data.data.accessToken);
+      return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
@@ -87,19 +73,17 @@ export const loginUserGoogle = createAsyncThunk(
 
 export const logoutUser = createAsyncThunk(
   "auth/logout",
+
   async (_, { getState, rejectWithValue }) => {
     const state = getState();
-    const token = state.auth.user.accessToken;
+    setToken(state.auth.user.accessToken);
 
-    if (token) {
-      setToken(token);
-    }
     try {
-      await instance.post("/auth/logout", null, { withCredentials: true });
-
-      clearToken();
-      localStorage.removeItem("accessToken");
+      await instance.post("/auth/logout");
       sessionStorage.removeItem("googleAuthDone");
+      // clearToken();
+      // localStorage.removeItem("accessToken");
+      // sessionStorage.removeItem("googleAuthDone");
 
       return;
     } catch (error) {
@@ -108,24 +92,21 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
-export const deleteUserAndLogout = createAsyncThunk(
-  "auth/deleteUserAndLogout",
-  async (userId, { getState, rejectWithValue }) => {
-    const state = getState();
-    const token = state.auth.user.accessToken;
+// export const cancelCompleteProfile = createAsyncThunk(
+//   "auth/cancelCompleteProfile",
+//   async (userId, { getState, rejectWithValue }) => {
+//     const state = getState();
+//     setToken(state.auth.user.accessToken);
 
-    if (!userId) return rejectWithValue("User ID is required");
+//     if (!userId) return rejectWithValue("User ID is required");
 
-    if (token) {
-      setToken(token);
-    }
+//     try {
+//       await instance.delete(`/users/me/${userId}`);
+//       return;
+//     } catch (error) {
+//       return rejectWithValue(error.response?.data || error.message);
+//     }
+//   }
+// );
 
-    try {
-      await instance.delete(`/users/me/${userId}`, { withCredentials: true });
 
-      return;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);

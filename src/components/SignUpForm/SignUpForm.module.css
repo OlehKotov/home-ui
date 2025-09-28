@@ -129,9 +129,7 @@
 
 @media (min-width: 768px) {
   .container {
-    padding-top: 54px;
-    padding-bottom: 54px;
-    padding-left: 102px;
+    padding: 54px 102px
   }
 
   .header {

@@ -22,8 +22,7 @@
 
 @media (min-width: 768px) {
   .backdrop {
-    padding-left: 32px;
-    padding-top: 32px;
+    padding: 32px;
     width: 704px;
   }
 }
