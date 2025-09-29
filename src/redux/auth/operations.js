@@ -39,7 +39,9 @@ export const registerUser = createAsyncThunk(
       setToken(response.data.data.accessToken);
       return response.data.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+      return rejectWithValue(
+        error.response?.data?.message || "Registration failed"
+      );
     }
   }
 );
@@ -52,7 +54,9 @@ export const loginUser = createAsyncThunk(
       setToken(response.data.data.accessToken);
       return response.data.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+      return rejectWithValue(
+        error.response?.data?.message || "Login failed"
+      );
     }
   }
 );
@@ -66,7 +70,9 @@ export const loginUserGoogle = createAsyncThunk(
       setToken(response.data.data.accessToken);
       return response.data.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || error.message);
+      return rejectWithValue(
+        error.response?.data?.message || "Login failed"
+      );
     }
   }
 );
@@ -87,7 +93,9 @@ export const logoutUser = createAsyncThunk(
 
       return;
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+      return rejectWithValue(
+        error.response?.data?.message || "Logout failed"
+      );
     }
   }
 );

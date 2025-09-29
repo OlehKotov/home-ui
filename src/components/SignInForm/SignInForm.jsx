@@ -47,10 +47,7 @@ const SignInForm = () => {
       reset();
       navigate("/dashboard");
     } catch (error) {
-      toast.error(error.message || "Login failed", {
-        duration: 4000,
-        position: "top-center",
-      });
+      toast.error(error);
     }
   };
 

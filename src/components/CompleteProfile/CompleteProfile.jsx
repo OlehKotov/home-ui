@@ -3,11 +3,7 @@ import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
 import css from "./CompleteProfile.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  // completeProfile,
-  // deleteUserAndLogout,
-  registerUser,
-} from "../../redux/auth/operations";
+import { registerUser } from "../../redux/auth/operations";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
@@ -18,7 +14,6 @@ import { clearDraftUser } from "../../redux/auth/slice";
 
 const CompleteProfile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // const userId = useSelector(selectUserId);
   const email = useSelector(selectDraftEmail);
   const password = useSelector(selectDraftPassword);
   const dispatch = useDispatch();
@@ -88,24 +83,8 @@ const CompleteProfile = () => {
       reset();
       navigate("/dashboard");
     } catch (error) {
-    // let message = "Registration failed";
-
-    // if (error.payload) {
-    //   if (typeof error.payload === "string") {
-    //     message = error.payload;
-    //   } else if (typeof error.payload === "object") {
-    //     if (error.payload.message) {
-    //       message = error.payload.message;
-    //     } else if (error.payload.errors) {
-    //       message = error.payload.errors.map(e => e.message).join(", ");
-    //     }
-    //   }
-    // } else if (error.message) {
-    //   message = error.message;
-    // }
-
-    toast.error(error.message);
-  }
+      toast.error(error);
+    }
   };
 
   const handleCancelClick = () => {

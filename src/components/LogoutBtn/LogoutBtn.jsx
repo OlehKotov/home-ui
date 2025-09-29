@@ -14,7 +14,7 @@ const LogoutBtn = () => {
       toast.success("Logout successful!");
       navigate("/");
     } catch (error) {
-      console.error("Error logging out:", error);
+      toast.error(error);
     }
   };
 

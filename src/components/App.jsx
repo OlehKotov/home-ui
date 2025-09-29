@@ -20,58 +20,113 @@ import GoogleAuth from "./GoogleAuth/GoogleAuth";
 function App() {
   const isLoading = useSelector(selectIsLoading);
 
-  return isLoading ? (
-    <LoaderOverlay />
-  ) : (
-    <SharedLayout>
-      <Toaster position="top-center" toastOptions={{ duration: 2000 }} />
-      <HelmetProvider>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <RestrictedRoute>
-                <HomePage />
-              </RestrictedRoute>
-            }
-          />
-          <Route
-            path="/signup"
-            element={
-              <RestrictedRoute>
-                <SignUpPage />
-              </RestrictedRoute>
-            }
-          />
-          <Route
-            path="/complete-profile"
-            element={
-              <CompleteProfileRoute>
-                <CompleteProfilePage />
-              </CompleteProfileRoute>
-            }
-          />
-          <Route
-            path="/signin"
-            element={
-              <RestrictedRoute>
-                <SignInPage />
-              </RestrictedRoute>
-            }
-          />
-          <Route path="/confirm-google-auth" element={<GoogleAuth />} />
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <DashboardPage />
-              </PrivateRoute>
-            }
-          />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </HelmetProvider>
-    </SharedLayout>
+  // return isLoading ? (
+  //   <LoaderOverlay />
+  // ) : (
+  //   <SharedLayout>
+  //     <Toaster position="top-center" toastOptions={{ duration: 2000 }} />
+  //     <HelmetProvider>
+  //       <Routes>
+  //         <Route
+  //           path="/"
+  //           element={
+  //             <RestrictedRoute>
+  //               <HomePage />
+  //             </RestrictedRoute>
+  //           }
+  //         />
+  //         <Route
+  //           path="/signup"
+  //           element={
+  //             <RestrictedRoute>
+  //               <SignUpPage />
+  //             </RestrictedRoute>
+  //           }
+  //         />
+  //         <Route
+  //           path="/complete-profile"
+  //           element={
+  //             <CompleteProfileRoute>
+  //               <CompleteProfilePage />
+  //             </CompleteProfileRoute>
+  //           }
+  //         />
+  //         <Route
+  //           path="/signin"
+  //           element={
+  //             <RestrictedRoute>
+  //               <SignInPage />
+  //             </RestrictedRoute>
+  //           }
+  //         />
+  //         <Route path="/confirm-google-auth" element={<GoogleAuth />} />
+  //         <Route
+  //           path="/dashboard"
+  //           element={
+  //             <PrivateRoute>
+  //               <DashboardPage />
+  //             </PrivateRoute>
+  //           }
+  //         />
+  //         <Route path="*" element={<NotFound />} />
+  //       </Routes>
+  //     </HelmetProvider>
+  //   </SharedLayout>
+  // );
+   return (
+    <>
+      <SharedLayout>
+        <Toaster position="top-center" toastOptions={{ duration: 2000 }} />
+        <HelmetProvider>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <RestrictedRoute>
+                  <HomePage />
+                </RestrictedRoute>
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                <RestrictedRoute>
+                  <SignUpPage />
+                </RestrictedRoute>
+              }
+            />
+            <Route
+              path="/complete-profile"
+              element={
+                <CompleteProfileRoute>
+                  <CompleteProfilePage />
+                </CompleteProfileRoute>
+              }
+            />
+            <Route
+              path="/signin"
+              element={
+                <RestrictedRoute>
+                  <SignInPage />
+                </RestrictedRoute>
+              }
+            />
+            <Route path="/confirm-google-auth" element={<GoogleAuth />} />
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <DashboardPage />
+                </PrivateRoute>
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </HelmetProvider>
+      </SharedLayout>
+
+      {isLoading && <LoaderOverlay />}
+    </>
   );
 }
 

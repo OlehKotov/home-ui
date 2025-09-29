@@ -94,7 +94,7 @@ const GoogleAuth = () => {
         toast.success("Login successful!");
         navigate("/dashboard", { replace: true });
       })
-      .catch((err) => console.error(err));
+      .catch((error) => toast.error(error));
   }, [dispatch, navigate, isLoggedIn]);
 
   const handleGoogleAuth = async () => {
@@ -107,12 +107,11 @@ const GoogleAuth = () => {
       if (url) {
         window.location.href = url;
       } else {
-        toast.error("OAuth URL not found", { position: "top-center" });
+        toast.error("OAuth URL not found");
       }
     } catch (error) {
-      toast.error(`Google auth failed: ${error.message}`, {
-        position: "top-center",
-      });
+      toast.error(`Google auth failed: ${error.message}`
+      )
     }
   };
 
