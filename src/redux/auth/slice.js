@@ -4,6 +4,7 @@ import {
   loginUser,
   registerUser,
   loginUserGoogle,
+  requestResetEmail,
 } from "./operations";
 
 const initialState = {
@@ -16,7 +17,6 @@ const initialState = {
     email: null,
     password: null,
     phone: null,
-    accessToken: null,
     apartmentId: null,
     role: null,
     _id: null,
@@ -62,12 +62,16 @@ const userSlice = createSlice({
         state.user = { ...action.payload };
       })
       .addCase(logoutUser.fulfilled, () => initialState)
+      .addCase(requestResetEmail.fulfilled, (state) => {
+        state.isLoading = false;
+      })
       .addMatcher(
         isAnyOf(
           registerUser.pending,
           loginUser.pending,
           loginUserGoogle.pending,
-          logoutUser.pending
+          logoutUser.pending,
+          requestResetEmail.pending
         ),
         (state) => {
           state.isLoading = true;
@@ -79,7 +83,8 @@ const userSlice = createSlice({
           registerUser.rejected,
           loginUser.rejected,
           loginUserGoogle.rejected,
-          logoutUser.rejected
+          logoutUser.rejected,
+          requestResetEmail.rejected
         ),
         (state) => {
           state.isLoading = false;

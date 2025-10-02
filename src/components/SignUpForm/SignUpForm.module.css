@@ -116,6 +116,7 @@
   text-decoration-skip-ink: none;
   color: #2f2f2f;
   padding-left: 3px;
+  text-decoration: none;
 }
 
 .passwordToggleIcon {

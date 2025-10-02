@@ -51,30 +51,6 @@ const CompleteProfile = () => {
     resolver: yupResolver(validationSchema),
   });
 
-  // const onSubmit = async (data) => {
-  //   try {
-  //     await dispatch(
-  //       registerUser({
-  //         name: data.name,
-  //         phone: data.phone,
-  //         apartmentNumber: data.apartmentNumber,
-  //       })
-  //     ).unwrap();
-
-  //     toast.success("Profile completed!", {
-  //       duration: 4000,
-  //       position: "top-center",
-  //     });
-  //     reset();
-  //     navigate("/dashboard");
-  //   } catch (error) {
-  //     toast.error(error.message || "Registration failed", {
-  //       duration: 4000,
-  //       position: "top-center",
-  //     });
-  //   }
-  // };
-
   const onSubmit = async (data) => {
     try {
       await dispatch(registerUser({ email, password, ...data })).unwrap();
@@ -101,23 +77,6 @@ const CompleteProfile = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-
-  // const handleCancelUser = async () => {
-  //   try {
-  //     if (!userId) {
-  //       toast.error("User ID not found");
-  //       return;
-  //     }
-  //     await dispatch(deleteUserAndLogout(userId)).unwrap();
-
-  //     toast.success("Your account was canceled and deleted successfully", {
-  //       position: "top-center",
-  //     });
-  //     navigate("/");
-  //   } catch (error) {
-  //     console.error("Error cancelling account:", error);
-  //   }
-  // };
 
   return (
     <div className={css.container}>
@@ -147,7 +106,7 @@ const CompleteProfile = () => {
               className={`${css.input} ${errors.phone ? css.error : ""}`}
               type="text"
               name="phone"
-              placeholder="Enter your phone"
+              placeholder="Enter your phone +380XXXXXXXXX"
               {...register("phone")}
             />
           </div>

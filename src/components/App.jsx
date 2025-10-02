@@ -16,64 +16,12 @@ import { selectIsLoading } from "../redux/selectors";
 import SharedLayout from "./SharedLayout/SharedLayout";
 import LoaderOverlay from "../shared/components/LoaderOverlay/LoaderOverlay";
 import GoogleAuth from "./GoogleAuth/GoogleAuth";
+import RequestResetEmailPage from "../pages/RequestResetEmailPage/RequestResetEmailPage";
 
 function App() {
   const isLoading = useSelector(selectIsLoading);
 
-  // return isLoading ? (
-  //   <LoaderOverlay />
-  // ) : (
-  //   <SharedLayout>
-  //     <Toaster position="top-center" toastOptions={{ duration: 2000 }} />
-  //     <HelmetProvider>
-  //       <Routes>
-  //         <Route
-  //           path="/"
-  //           element={
-  //             <RestrictedRoute>
-  //               <HomePage />
-  //             </RestrictedRoute>
-  //           }
-  //         />
-  //         <Route
-  //           path="/signup"
-  //           element={
-  //             <RestrictedRoute>
-  //               <SignUpPage />
-  //             </RestrictedRoute>
-  //           }
-  //         />
-  //         <Route
-  //           path="/complete-profile"
-  //           element={
-  //             <CompleteProfileRoute>
-  //               <CompleteProfilePage />
-  //             </CompleteProfileRoute>
-  //           }
-  //         />
-  //         <Route
-  //           path="/signin"
-  //           element={
-  //             <RestrictedRoute>
-  //               <SignInPage />
-  //             </RestrictedRoute>
-  //           }
-  //         />
-  //         <Route path="/confirm-google-auth" element={<GoogleAuth />} />
-  //         <Route
-  //           path="/dashboard"
-  //           element={
-  //             <PrivateRoute>
-  //               <DashboardPage />
-  //             </PrivateRoute>
-  //           }
-  //         />
-  //         <Route path="*" element={<NotFound />} />
-  //       </Routes>
-  //     </HelmetProvider>
-  //   </SharedLayout>
-  // );
-   return (
+  return (
     <>
       <SharedLayout>
         <Toaster position="top-center" toastOptions={{ duration: 2000 }} />
@@ -112,6 +60,14 @@ function App() {
               }
             />
             <Route path="/confirm-google-auth" element={<GoogleAuth />} />
+            <Route
+              path="/request-reset-email"
+              element={
+                <RestrictedRoute>
+                  <RequestResetEmailPage />
+                </RestrictedRoute>
+              }
+            />
             <Route
               path="/dashboard"
               element={

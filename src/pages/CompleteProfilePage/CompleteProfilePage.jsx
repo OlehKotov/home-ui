@@ -9,7 +9,7 @@ import CompleteProfile from '../../components/CompleteProfile/CompleteProfile';
 const CompleteProfilePage = () => {
   return (
     <div className={css.wrapper}>
-      <DocumentTitle>Home Track - Register</DocumentTitle>
+      <DocumentTitle>Home Track - Complete Profile Page</DocumentTitle>
       <div className={css.backdrop}>
         <Logo />
         <CompleteProfile />

@@ -108,15 +108,25 @@ const SignInForm = () => {
           <button className={css.submitButton} type="submit">
             Sign In
           </button>
-          <GoogleAuth/>
+          <GoogleAuth />
         </div>
       </form>
-      
-      <div className={css.textWrapper}>
-        Don’t have an account?
-        <NavLink className={css.link} to="/signup">
-          Sign Up
-        </NavLink>
+
+      <div className={css.linkWrapper}>
+        <ul>
+          <li className={css.linkItem}>
+            Don’t have an account?
+            <NavLink className={css.link} to="/signup">
+              Sign Up
+            </NavLink>
+          </li>
+          <li className={css.linkItem}>
+            Forgot your password?
+            <NavLink className={css.link} to="/request-reset-email">
+              Reset Password
+            </NavLink>
+          </li>
+        </ul>
       </div>
     </div>
   );

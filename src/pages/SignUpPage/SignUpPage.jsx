@@ -8,7 +8,7 @@ import PictureSection from '../../components/PictureSection/PictureSection';
 const SignUpPage = () => {
   return (
     <div className={css.wrapper}>
-      <DocumentTitle>Home Track - Register</DocumentTitle>
+      <DocumentTitle>Home Track - Register Page</DocumentTitle>
       <div className={css.backdrop}>
         <Logo />
         <SignUpForm />

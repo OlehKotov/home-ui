@@ -1,46 +1,18 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { instance, setToken } from "../axios";
-
-// export const registerUser = createAsyncThunk(
-//   "auth/register",
-//   async (userData, { rejectWithValue }) => {
-//     try {
-//       const response = await instance.post("/auth/register", userData);
-
-//       setToken(response.data.data.accessToken);
-
-//       return response.data.data;
-//     } catch (error) {
-//       return rejectWithValue(error.response?.data || error.message);
-//     }
-//   }
-// );
-
-// export const completeProfile = createAsyncThunk(
-//   "auth/completeProfile",
-//   async (userData, { getState, rejectWithValue }) => {
-//     const state = getState();
-//     setToken(state.auth.user.accessToken);
-
-//     try {
-//       const response = await instance.patch("/auth/complete-profile", userData);
-//       return response.data.data;
-//     } catch (error) {
-//       return rejectWithValue(error.response?.data || error.message);
-//     }
-//   }
-// );
+import { instance } from "../axios";
 
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (userData, { rejectWithValue }) => {
     try {
       const response = await instance.post("/auth/register", userData);
-      setToken(response.data.data.accessToken);
       return response.data.data;
     } catch (error) {
+      if (!error.response) {
+        return rejectWithValue("Network error. Please try again later.");
+      }
       return rejectWithValue(
-        error.response?.data?.message || "Registration failed"
+        error.response.data?.message || "Registration failed"
       );
     }
   }
@@ -51,12 +23,15 @@ export const loginUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await instance.post("/auth/login", userData);
-      setToken(response.data.data.accessToken);
       return response.data.data;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Login failed"
-      );
+      if (error.response) {
+        return rejectWithValue(error.response.data?.message || "Login failed");
+      } else if (error.request) {
+        return rejectWithValue("Network error. Please try again later.");
+      } else {
+        return rejectWithValue(error.message || "Unexpected error");
+      }
     }
   }
 );
@@ -67,54 +42,50 @@ export const loginUserGoogle = createAsyncThunk(
     try {
       const response = await instance.post("/auth/confirm-oauth", { code });
 
-      setToken(response.data.data.accessToken);
       return response.data.data;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Login failed"
-      );
+      if (error.response) {
+        return rejectWithValue(error.response.data?.message || "Login failed");
+      } else if (error.request) {
+        return rejectWithValue("Network error. Please try again later.");
+      } else {
+        return rejectWithValue(error.message || "Unexpected error");
+      }
     }
   }
 );
 
 export const logoutUser = createAsyncThunk(
   "auth/logout",
-
-  async (_, { getState, rejectWithValue }) => {
-    const state = getState();
-    setToken(state.auth.user.accessToken);
-
+  async (_, { rejectWithValue }) => {
     try {
       await instance.post("/auth/logout");
       sessionStorage.removeItem("googleAuthDone");
-      // clearToken();
-      // localStorage.removeItem("accessToken");
-      // sessionStorage.removeItem("googleAuthDone");
 
       return;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Logout failed"
-      );
+      if (!error.response) {
+        return rejectWithValue("Network error. Please try again later.");
+      }
+      return rejectWithValue(error.response.data?.message || "Logout failed");
     }
   }
 );
 
-// export const cancelCompleteProfile = createAsyncThunk(
-//   "auth/cancelCompleteProfile",
-//   async (userId, { getState, rejectWithValue }) => {
-//     const state = getState();
-//     setToken(state.auth.user.accessToken);
+export const requestResetEmail = createAsyncThunk(
+  "auth/requestResetEmail",
+  async (email, { rejectWithValue }) => {
+    console.log(email);
 
-//     if (!userId) return rejectWithValue("User ID is required");
+    try {
+      await instance.post("/auth/request-reset-email", email);
 
-//     try {
-//       await instance.delete(`/users/me/${userId}`);
-//       return;
-//     } catch (error) {
-//       return rejectWithValue(error.response?.data || error.message);
-//     }
-//   }
-// );
-
-
+      return;
+    } catch (error) {
+      if (!error.response) {
+        return rejectWithValue("Network error. Please try again later.");
+      }
+      return rejectWithValue(error.response.data?.message || "Request failed");
+    }
+  }
+);
