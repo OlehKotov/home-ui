@@ -5,6 +5,7 @@
   margin: 0 auto;
   background-color: #f0eff4;
   padding: 10px;
+  flex-shrink: 0;
 }
 
 .img {
@@ -25,7 +26,7 @@
 
 @media screen and (min-width: 1440px) {
   .imgContainer {
-    width: 672px;
+    width: 688px;
     height: 736px;
     margin: 0;
   }

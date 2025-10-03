@@ -7,7 +7,7 @@ import SignInForm from '../../components/SignInForm/SignInForm';
 
 const SignInPage = () => {
   return (
-    <div className={css.wrapper}>
+    <div className={css.container}>
       <DocumentTitle>Home Track - Login Page</DocumentTitle>
       <div className={css.backdrop}>
         <Logo />

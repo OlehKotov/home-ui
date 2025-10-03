@@ -8,7 +8,7 @@
   margin: 0 auto;
 }
 
-.wrapper {
+.container {
   width: 100%;
   max-width: 1440px;
   min-height: 100vh;
@@ -29,12 +29,12 @@
 
 @media (min-width: 1440px) {
   .backdrop {
-    width: 672px;
+    width: 688px;
     height: 736px;
     margin: 0;
   }
 
-  .wrapper {
+  .container {
     flex-direction: row;
     align-items: center;
     justify-content: center;
