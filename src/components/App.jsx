@@ -2,7 +2,6 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import HomePage from "../pages/Homepage/HomePage";
 import { HelmetProvider } from "@dr.pogodin/react-helmet";
-import NotFound from "./NotFound/NotFound";
 import SignUpPage from "../pages/SignUpPage/SignUpPage";
 import { Toaster } from "react-hot-toast";
 import RestrictedRoute from "./RestrictedRoute";
@@ -17,6 +16,7 @@ import SharedLayout from "./SharedLayout/SharedLayout";
 import LoaderOverlay from "../shared/components/LoaderOverlay/LoaderOverlay";
 import GoogleAuth from "./GoogleAuth/GoogleAuth";
 import RequestResetEmailPage from "../pages/RequestResetEmailPage/RequestResetEmailPage";
+import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 
 function App() {
   const isLoading = useSelector(selectIsLoading);
@@ -76,7 +76,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </HelmetProvider>
       </SharedLayout>
