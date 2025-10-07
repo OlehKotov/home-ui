@@ -1,14 +1,18 @@
-import React from "react";
-import LogoutBtn from "../LogoutBtn/LogoutBtn";
-import { useSelector } from "react-redux";
-import { selectUserName } from "../../redux/selectors";
+import React, { useState } from "react";
+import css from "./Dashboard.module.css";
+import Menu from "../Menu/Menu";
+import HeaderDashboard from "../HeaderDashbord/HeaderDashboard";
 
 const Dashboard = () => {
-  const userName = useSelector(selectUserName);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+  const closeMenu = () => setIsMenuOpen(false);
+
   return (
-    <div>
-      <h2>Welcome, {userName}!</h2>
-      <LogoutBtn />
+    <div className={css.backdrop}>
+      <HeaderDashboard onClick={toggleMenu} />
+      <Menu isOpen={isMenuOpen} onClose={closeMenu} />
     </div>
   );
 };

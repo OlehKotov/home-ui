@@ -15,8 +15,13 @@ import { selectIsLoading } from "../redux/selectors";
 import SharedLayout from "./SharedLayout/SharedLayout";
 import LoaderOverlay from "../shared/components/LoaderOverlay/LoaderOverlay";
 import GoogleAuth from "./GoogleAuth/GoogleAuth";
-import RequestResetEmailPage from "../pages/RequestResetEmailPage/RequestResetEmailPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
+import CheckEmailPage from "../pages/CheckEmailPage/CheckEmailPage";
+import RequestResetPassPage from "../pages/RequestResetPassPage/RequestResetPassPage";
+import ResetPasswordPage from "../pages/ResetPasswordPage/ResetPasswordPage";
+import ResetPasswordRoute from "./ResetPasswordRoute";
+import Readings from "./Readings/Readings";
+import Overview from "./Overview/Overview";
 
 function App() {
   const isLoading = useSelector(selectIsLoading);
@@ -64,7 +69,7 @@ function App() {
               path="/request-reset-email"
               element={
                 <RestrictedRoute>
-                  <RequestResetEmailPage />
+                  <RequestResetPassPage />
                 </RestrictedRoute>
               }
             />
@@ -74,6 +79,18 @@ function App() {
                 <PrivateRoute>
                   <DashboardPage />
                 </PrivateRoute>
+              }
+            >
+              <Route index element={<Overview />} />
+              <Route path="readings" element={<Readings />} />
+            </Route>
+            <Route path="/check-email" element={<CheckEmailPage />} />
+            <Route
+              path="/reset-password"
+              element={
+                <ResetPasswordRoute>
+                  <ResetPasswordPage />
+                </ResetPasswordRoute>
               }
             />
             <Route path="*" element={<NotFoundPage />} />

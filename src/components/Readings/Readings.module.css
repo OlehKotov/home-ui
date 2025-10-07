@@ -1,22 +1,21 @@
-.backdrop {
+.container {
   border-radius: 30px;
-  background: #f0eff4;
+  background-color: #f0eff4;
   padding: 24px 16px;
   width: 343px;
   margin: 0 auto;
 }
 
 @media (min-width: 768px) {
-  .backdrop {
-    padding-left: 32px;
-    padding-top: 32px;
+  .container {
+    padding: 32px;
     width: 704px;
   }
 }
 
 @media (min-width: 1440px) {
-  .backdrop {
-    width: 100%;
+  .container {
+    width: 688px;
     height: 736px;
     margin: 0;
     flex-shrink: 0;

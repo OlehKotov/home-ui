@@ -1,26 +1,32 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { NavLink, useNavigate } from "react-router-dom";
-import css from "./SignUpForm.module.css";
-import sprite from "../../assets/icons/sprite.svg";
-import { useDispatch } from "react-redux";
+import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
+import css from "./ResetPassword.module.css";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
-import { setDraftUser } from "../../redux/auth/slice";
+import sprite from "../../assets/icons/sprite.svg";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { resetPassword } from "../../redux/auth/operations";
 
-const SignUpForm = () => {
+const ResetPassword = () => {
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("token");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleRepeatPasswordVisibility = () => {
+    setShowRepeatPassword(!showRepeatPassword);
+  };
+
   const validationSchema = Yup.object().shape({
-    email: Yup.string()
-      .email("Invalid email format")
-      .matches(
-        /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$/,
-        "Invalid email format"
-      )
-      .required("Email is required"),
     password: Yup.string()
       .min(6, "Password must be at least 6 characters")
       .required("Password is required"),
@@ -38,43 +44,32 @@ const SignUpForm = () => {
     resolver: yupResolver(validationSchema),
   });
 
-  const onSubmit = (data) => {
-    dispatch(setDraftUser({ email: data.email, password: data.password }));
-    toast.success("Continue to complete profile!");
-    reset();
-    navigate("/complete-profile");
-  };
+  const onSubmit = async (data) => {
+    if (!token) {
+      toast.error("Invalid or expired reset link");
+      return;
+    }
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const toggleRepeatPasswordVisibility = () => {
-    setShowRepeatPassword(!showRepeatPassword);
+    try {
+      await dispatch(
+        resetPassword({ token, password: data.password })
+      ).unwrap();
+      toast.success("Password successfully reset!");
+      reset();
+      navigate("/signin");
+    } catch (error) {
+      toast.error(
+        typeof error === "string"
+          ? error
+          : error?.message || "Something went wrong"
+      );
+    }
   };
 
   return (
     <div className={css.container}>
       <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-        <h2 className={css.header}>Sign Up</h2>
-
-        <div className={css.formGroup}>
-          <label className={css.label}>Email:</label>
-          <div className={css.inputWrapper}>
-            <input
-              className={`${css.input} ${errors.email ? css.error : ""}`}
-              type="text"
-              placeholder="Enter your email"
-              {...register("email")}
-            />
-          </div>
-          {errors.email && (
-            <p className={css.errorMessage}>{errors.email.message}</p>
-          )}
-        </div>
+        <h2 className={css.header}>Change the password</h2>
 
         <div className={css.formGroupPassword}>
           <label className={css.label}>Password:</label>
@@ -82,7 +77,7 @@ const SignUpForm = () => {
             <input
               className={`${css.input} ${errors.password ? css.error : ""}`}
               type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
+              placeholder="Enter new password"
               {...register("password")}
             />
             <svg
@@ -106,10 +101,10 @@ const SignUpForm = () => {
           <div className={css.inputWrapper}>
             <input
               className={`${css.input} ${
-                errors.repeatPassword ? css.error : ""
+                errors.confirmPassword ? css.error : ""
               }`}
               type={showRepeatPassword ? "text" : "password"}
-              placeholder="Confirm your password"
+              placeholder="Confirm new password"
               {...register("confirmPassword")}
             />
             <svg
@@ -132,18 +127,21 @@ const SignUpForm = () => {
 
         <div className={css.buttonWrapper}>
           <button className={css.submitButton} type="submit">
-            Sign Up
+            Reset Password
           </button>
         </div>
       </form>
+
       <div className={css.actions}>
-        Already have an account?
-        <NavLink className={css.link} to="/signin">
-          Sign In
-        </NavLink>
+        <div className={css.linkItem}>
+          <span>Back to </span>
+          <NavLink className={css.link} to="/signin">
+            Sign In
+          </NavLink>
+        </div>
       </div>
     </div>
   );
 };
 
-export default SignUpForm;
+export default ResetPassword;

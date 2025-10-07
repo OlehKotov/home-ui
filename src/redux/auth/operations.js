@@ -27,11 +27,11 @@ export const loginUser = createAsyncThunk(
     } catch (error) {
       if (error.response) {
         return rejectWithValue(error.response.data?.message || "Login failed");
-      } else if (error.request) {
-        return rejectWithValue("Network error. Please try again later.");
-      } else {
-        return rejectWithValue(error.message || "Unexpected error");
       }
+      if (error.request) {
+        return rejectWithValue("Network error. Please try again later.");
+      }
+      return rejectWithValue(error.message || "Unexpected error");
     }
   }
 );
@@ -64,10 +64,8 @@ export const logoutUser = createAsyncThunk(
 
       return;
     } catch (error) {
-      if (!error.response) {
-        return rejectWithValue("Network error. Please try again later.");
-      }
-      return rejectWithValue(error.response.data?.message || "Logout failed");
+      sessionStorage.removeItem("googleAuthDone");
+      return;
     }
   }
 );
@@ -75,8 +73,6 @@ export const logoutUser = createAsyncThunk(
 export const requestResetEmail = createAsyncThunk(
   "auth/requestResetEmail",
   async (email, { rejectWithValue }) => {
-    console.log(email);
-
     try {
       await instance.post("/auth/request-reset-email", email);
 
@@ -86,6 +82,23 @@ export const requestResetEmail = createAsyncThunk(
         return rejectWithValue("Network error. Please try again later.");
       }
       return rejectWithValue(error.response.data?.message || "Request failed");
+    }
+  }
+);
+
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async ({ token, password }, { rejectWithValue }) => {
+    try {
+      const response = await instance.post("/auth/reset-password", {
+        token,
+        password,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to reset password"
+      );
     }
   }
 );

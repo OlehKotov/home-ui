@@ -1,5 +1,5 @@
 import { instance } from "./axios";
-import { logoutUser } from "./auth/operations";
+import { forceLogout } from "./auth/slice";
 import store from "./store";
 
 export const setupInterceptors = () => {
@@ -7,13 +7,11 @@ export const setupInterceptors = () => {
     (response) => response,
     async (error) => {
       if (error.response?.status === 401) {
-        store.dispatch(logoutUser());
+        store.dispatch(forceLogout());
         window.location.href = "/signin";
+        return;
       }
       return Promise.reject(error);
     }
   );
 };
-
-
-

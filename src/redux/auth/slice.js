@@ -5,6 +5,7 @@ import {
   registerUser,
   loginUserGoogle,
   requestResetEmail,
+  resetPassword,
 } from "./operations";
 
 const initialState = {
@@ -27,7 +28,7 @@ const initialState = {
   isError: false,
 };
 
-const userSlice = createSlice({
+const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
@@ -41,6 +42,7 @@ const userSlice = createSlice({
       state.draftUser.password = null;
       state.isDraftUser = false;
     },
+    forceLogout: () => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -65,13 +67,17 @@ const userSlice = createSlice({
       .addCase(requestResetEmail.fulfilled, (state) => {
         state.isLoading = false;
       })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.isLoading = false;
+      })
       .addMatcher(
         isAnyOf(
           registerUser.pending,
           loginUser.pending,
           loginUserGoogle.pending,
           logoutUser.pending,
-          requestResetEmail.pending
+          requestResetEmail.pending,
+          resetPassword.pending
         ),
         (state) => {
           state.isLoading = true;
@@ -84,7 +90,8 @@ const userSlice = createSlice({
           loginUser.rejected,
           loginUserGoogle.rejected,
           logoutUser.rejected,
-          requestResetEmail.rejected
+          requestResetEmail.rejected,
+          resetPassword.rejected
         ),
         (state) => {
           state.isLoading = false;
@@ -94,5 +101,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { setDraftUser, clearDraftUser } = userSlice.actions;
-export default userSlice.reducer;
+export const { setDraftUser, clearDraftUser, forceLogout } = authSlice.actions;
+export default authSlice.reducer;

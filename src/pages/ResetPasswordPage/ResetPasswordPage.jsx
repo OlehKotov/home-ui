@@ -1,21 +1,21 @@
 import React from 'react'
 import Logo from '../../components/Logo/Logo';
-import SignUpForm from '../../components/SignUpForm/SignUpForm';
-import css from './SignUpPage.module.css';
+import css from './ResetPasswordPage.module.css';
 import DocumentTitle from '../../components/DocumentTitle';
 import PictureSection from '../../components/PictureSection/PictureSection';
+import ResetPassword from '../../components/ResetPassword/ResetPassword';
 
-const SignUpPage = () => {
+const ResetPasswordPage = () => {
   return (
-    <div className={css.container}>
-      <DocumentTitle>Home Track - Sign Up Page</DocumentTitle>
+    <div className={css.wrapper}>
+      <DocumentTitle>Home Track - Reset Password Page</DocumentTitle>
       <div className={css.backdrop}>
         <Logo />
-        <SignUpForm />
+        <ResetPassword />
       </div>
       <PictureSection />
     </div>
   )
 }
 
-export default SignUpPage
+export default ResetPasswordPage

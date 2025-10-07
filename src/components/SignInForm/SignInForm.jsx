@@ -112,7 +112,7 @@ const SignInForm = () => {
         </div>
       </form>
 
-      <div className={css.linkWrapper}>
+      <div className={css.actions}>
         <ul>
           <li className={css.linkItem}>
             Don’t have an account?

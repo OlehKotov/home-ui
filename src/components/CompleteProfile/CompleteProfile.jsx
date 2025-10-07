@@ -9,7 +9,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
 import { selectDraftEmail, selectDraftPassword } from "../../redux/selectors";
 import ModalBackdrop from "../../shared/components/ModalBackdrop/ModalBackdrop";
-import ConfirmDeleteModal from "../../shared/components/ConfirmDeleteModal/ConfirmDeleteModal";
+import ConfirmModal from "../../shared/components/ConfirmModal/ConfirmModal";
 import { clearDraftUser } from "../../redux/auth/slice";
 
 const CompleteProfile = () => {
@@ -138,7 +138,7 @@ const CompleteProfile = () => {
           </button>
         </div>
       </form>
-      <div className={css.textWrapper}>
+      <div className={css.actions}>
         Don’t want to complete profile?
         <NavLink className={css.link} onClick={handleCancelClick}>
           Cancel
@@ -149,7 +149,9 @@ const CompleteProfile = () => {
         onRequestClose={handleCloseModal}
         closeTimeoutMS={300}
       >
-        <ConfirmDeleteModal
+        <ConfirmModal
+          title="Are you sure?"
+          text="Do you really want to cancel your account?"
           onConfirm={handleCancelUser}
           onCancel={handleCloseModal}
         />

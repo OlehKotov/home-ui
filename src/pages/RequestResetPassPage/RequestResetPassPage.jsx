@@ -1,21 +1,21 @@
 import React from 'react'
 import Logo from '../../components/Logo/Logo';
-import css from './RequestResetEmailPage.module.css';
+import css from './RequestResetPassPage.module.css';
 import DocumentTitle from '../../components/DocumentTitle';
 import PictureSection from '../../components/PictureSection/PictureSection';
-import RequestResetEmail from '../../components/RequestResetEmail/RequestResetEmail';
+import RequestResetPass from '../../components/RequestResetPass/RequestResetPass';
 
-const RequestResetEmailPage = () => {
+const RequestResetPassPage = () => {
   return (
     <div className={css.wrapper}>
-      <DocumentTitle>Home Track - Reset Password Page</DocumentTitle>
+      <DocumentTitle>Home Track - Request Reset Password Page</DocumentTitle>
       <div className={css.backdrop}>
         <Logo />
-        <RequestResetEmail />
+        <RequestResetPass />
       </div>
       <PictureSection />
     </div>
   )
 }
 
-export default RequestResetEmailPage
+export default RequestResetPassPage

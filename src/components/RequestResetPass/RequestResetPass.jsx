@@ -1,13 +1,13 @@
 import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
-import css from "./RequestResetEmail.module.css";
+import css from "./RequestResetPass.module.css";
 import { useDispatch } from "react-redux";
 import { requestResetEmail } from "../../redux/auth/operations";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
 
-const RequestResetEmail = () => {
+const RequestResetPass = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -27,13 +27,12 @@ const RequestResetEmail = () => {
   });
 
   const onSubmit = async (data) => {
-    console.log(data);
     
     try {
       dispatch(requestResetEmail({ email: data.email })).unwrap();
       toast.success("Check your email for reset instructions!");
       reset();
-      navigate("/");
+      navigate("/check-email");
     } catch (error) {
       toast.error(
         typeof error === "string"
@@ -71,7 +70,7 @@ const RequestResetEmail = () => {
         </div>
       </form>
 
-      <div className={css.linkWrapper}>
+      <div className={css.actions}>
         <div className={css.linkItem}>
           <span>Back to </span>
           <NavLink className={css.link} to="/signin">
@@ -83,4 +82,4 @@ const RequestResetEmail = () => {
   );
 };
 
-export default RequestResetEmail;
+export default RequestResetPass;
