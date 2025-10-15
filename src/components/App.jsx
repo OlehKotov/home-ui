@@ -22,6 +22,7 @@ import ResetPasswordPage from "../pages/ResetPasswordPage/ResetPasswordPage";
 import ResetPasswordRoute from "./ResetPasswordRoute";
 import Readings from "./Readings/Readings";
 import Overview from "./Overview/Overview";
+import Invoices from "./Invoices/Invoices";
 
 function App() {
   const isLoading = useSelector(selectIsLoading);
@@ -83,6 +84,7 @@ function App() {
             >
               <Route index element={<Overview />} />
               <Route path="readings" element={<Readings />} />
+              <Route path="invoices" element={<Invoices />} />
             </Route>
             <Route path="/check-email" element={<CheckEmailPage />} />
             <Route

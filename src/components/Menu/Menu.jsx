@@ -4,9 +4,8 @@ import css from "./Menu.module.css";
 import sprite from "../../assets/icons/sprite.svg";
 import LogoutBtn from "../LogoutBtn/LogoutBtn";
 
-const Menu = ({ isOpen, onClose }) => {
+const Menu = ({ isOpen, onClose, isDesktop = false }) => {
   const menuRef = useRef(null);
-
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -32,13 +31,49 @@ const Menu = ({ isOpen, onClose }) => {
     };
   }, [isOpen, onClose]);
 
- 
   const handleLinkClick = () => {
     onClose();
   };
 
   return (
-    <aside
+    isDesktop? (  <nav className={css.desktopNav}>
+        <ul className={css.desktopList}>
+          <li>
+            <NavLink
+              to="/dashboard"
+              end
+              className={({ isActive }) =>
+                `${css.menuLink} ${isActive ? css.current : ""}`
+              }
+            >
+              Overview
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/dashboard/readings"
+              className={({ isActive }) =>
+                `${css.menuLink} ${isActive ? css.current : ""}`
+              }
+            >
+              Readings
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/dashboard/invoices"
+              className={({ isActive }) =>
+                `${css.menuLink} ${isActive ? css.current : ""}`
+              }
+            >
+              Invoices
+            </NavLink>
+          </li>
+          <li>
+            <LogoutBtn />
+          </li>
+        </ul>
+      </nav>) : (<aside
       ref={menuRef}
       className={`${css.sidebar} ${isOpen ? css.open : ""}`}
       id="sidebar-menu"
@@ -81,18 +116,23 @@ const Menu = ({ isOpen, onClose }) => {
           </li>
 
           <li className={css.menuItem}>
-            <a className={css.menuLink} href="#" onClick={handleLinkClick}>
-              Deals
-            </a>
+            <NavLink
+              to="/dashboard/invoices"
+              onClick={handleLinkClick}
+              className={({ isActive }) =>
+                `${css.menuLink} ${isActive ? css.current : ""}`
+              }
+            >
+              Invoices
+            </NavLink>
           </li>
         </ul>
 
         <LogoutBtn />
       </nav>
-    </aside>
+    </aside>)
+    
   );
 };
 
 export default Menu;
-
-

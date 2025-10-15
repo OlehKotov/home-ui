@@ -1,118 +1,93 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import css from "./Readings.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { selectReadings, selectUserApartmentId } from "../../redux/selectors";
-import { fetchReadingsByApartmentId } from "../../redux/readings/operations";
-// import { useForm } from "react-hook-form";
-// import { useSelector } from "react-redux";
- // axios instance с withCredentials
-// import { selectUser } from "../../redux/selectors"; // селектор твоего пользователя
-// import toast from "react-hot-toast";
+import {
+  fetchReadingsByApartmentId,
+  updateReadingsByApartmentId,
+} from "../../redux/readings/operations";
+import { useForm } from "react-hook-form";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import toast from "react-hot-toast";
 
 const Readings = () => {
   const dispatch = useDispatch();
   const readings = useSelector(selectReadings);
   const apartmentId = useSelector(selectUserApartmentId);
-  
-  
+
   useEffect(() => {
     if (apartmentId) {
-      dispatch(fetchReadingsByApartmentId(apartmentId));
+      dispatch(fetchReadingsByApartmentId({ apartmentId, limit: 2 }));
     }
   }, [dispatch, apartmentId]);
-  // const [readings, setReadings] = useState([]);
-  // const { register, handleSubmit, reset } = useForm();
 
-  // const apartmentId = user?.apartmentId;
+  const lastReading = useMemo(() => {
+    if (readings.length === 0) return null;
+    return readings[0];
+  }, [readings]);
 
-  // Загружаем показания
-  // useEffect(() => {
-  //   if (!apartmentId) return;
-  //   const fetchReadings = async () => {
-  //     try {
-  //       const { data } = await instance.get(`/readings/${apartmentId}`);
-  //       setReadings(data);
-  //     } catch (error) {
-  //       console.error(error);
-  //       toast.error("Failed to load readings");
-  //     }
-  //   };
-  //   fetchReadings();
-  // }, [apartmentId]);
+  const validationSchema = Yup.object().shape({
+  waterCold: Yup.number()
+    .transform((value, originalValue) => (originalValue.trim() === "" ? undefined : value))
+    .typeError("Please enter a valid number")
+    .required("Cold water reading is required")
+    .min(
+      lastReading?.waterCold ?? 0,
+      `Value cannot be less than previous reading (${lastReading?.waterCold ?? 0})`
+    ),
 
-  // Отправка новых показаний
-  // const onSubmit = async (formData) => {
-  //   const payload = {
-  //     apartmentId,
-  //     ...Object.fromEntries(
-  //       Object.entries(formData).filter(([_, v]) => v !== "")
-  //     ),
-  //   };
+  waterHot: Yup.number()
+    .transform((value, originalValue) => (originalValue.trim() === "" ? undefined : value))
+    .typeError("Please enter a valid number")
+    .min(
+      lastReading?.waterHot ?? 0,
+      `Value cannot be less than previous reading (${lastReading?.waterHot ?? 0})`
+    ),
 
-  //   try {
-  //     const { data } = await instance.post("/readings", payload);
-  //     setReadings((prev) => [...prev, data]);
-  //     toast.success("Readings submitted successfully");
-  //     reset();
-  //   } catch (error) {
-  //     console.error(error);
-  //     toast.error(error.response?.data?.message || "Error submitting readings");
-  //   }
-  // };
+  electricity: Yup.number()
+    .transform((value, originalValue) => (originalValue.trim() === "" ? undefined : value))
+    .typeError("Please enter a valid number")
+    .min(
+      lastReading?.electricity ?? 0,
+      `Value cannot be less than previous reading (${lastReading?.electricity ?? 0})`
+    ),
+});
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  });
+
+  const onSubmit = async (data) => {
+    if (!apartmentId) return;
+
+    const currentMonth = new Date().toISOString().split("T")[0]; 
+
+    try {
+      await dispatch(
+        updateReadingsByApartmentId({
+          apartmentId,
+          month: currentMonth,
+          ...data,
+        })
+      ).unwrap();
+
+      toast.success("Readings successfully sent!");
+      reset();
+      dispatch(fetchReadingsByApartmentId({ apartmentId, limit: 2 })); 
+    } catch (error) {
+      toast.error(error || "Failed to send readings");
+    }
+  };
 
   return (
     <div className={css.container}>
-      <h2 className={css.title}>Meter Readings</h2>
-
-      <ul>
-        {readings.map((item) => (
-          <li key={item._id}>
-            <strong>{item.month}:</strong> <br />
-            Горячая вода: {item.waterHot ?? "-"} <br />
-            Холодная вода: {item.waterCold ?? "-"} <br />
-            Электричество: {item.electricity ?? "-"}
-          </li>
-        ))}
-      </ul>
-
-      <form className={css.form}>
-        <label className={css.label}>
-          Cold Water
-          <input
-            type="number"
-            step="0.01"
-            // {...register("waterCold")}
-            className={css.input}
-            placeholder="e.g. 123"
-          />
-        </label>
-
-        <label className={css.label}>
-          Hot Water
-          <input
-            type="number"
-            step="0.01"
-            // {...register("waterHot")}
-            className={css.input}
-            placeholder="e.g. 45"
-          />
-        </label>
-
-        <label className={css.label}>
-          Electricity
-          <input
-            type="number"
-            step="1"
-            // {...register("electricity")}
-            className={css.input}
-            placeholder="e.g. 580"
-          />
-        </label>
-
-        <button type="submit" className={css.submitBtn}>
-          Submit Readings
-        </button>
-      </form>
+      <h2 className={css.header}>Readings</h2>
 
       {readings.length > 0 ? (
         <table className={css.table}>
@@ -125,12 +100,12 @@ const Readings = () => {
             </tr>
           </thead>
           <tbody>
-            {readings.map((r) => (
-              <tr key={r._id}>
-                <td>{new Date(r.createdAt).toLocaleDateString()}</td>
-                <td>{r.waterCold ?? "-"}</td>
-                <td>{r.waterHot ?? "-"}</td>
-                <td>{r.electricity ?? "-"}</td>
+            {readings.map((item) => (
+              <tr key={item._id}>
+                <td>{item.month}</td>
+                <td>{item.waterCold ?? "-"}</td>
+                <td>{item.waterHot ?? "-"}</td>
+                <td>{item.electricity ?? "-"}</td>
               </tr>
             ))}
           </tbody>
@@ -138,6 +113,62 @@ const Readings = () => {
       ) : (
         <p className={css.noData}>No readings yet</p>
       )}
+
+      <form className={css.form} onSubmit={handleSubmit(onSubmit)}>
+        <label className={css.label}>
+          Cold Water
+          <input
+            type="number"
+            step="0.01"
+            {...register("waterCold")}
+            className={`${css.input} ${errors.waterCold ? css.error : ""}`}
+            placeholder={
+              lastReading?.waterCold ? `${lastReading.waterCold}` : "e.g. 123"
+            }
+          />
+          {errors.waterCold && (
+            <span className={css.errorMessage}>{errors.waterCold.message}</span>
+          )}
+        </label>
+
+        <label className={css.label}>
+          Hot Water
+          <input
+            type="number"
+            step="0.01"
+            {...register("waterHot")}
+            className={`${css.input} ${errors.waterHot ? css.error : ""}`}
+            placeholder={
+              lastReading?.waterHot ? `${lastReading.waterHot}` : "e.g. 45"
+            }
+          />
+          {errors.waterHot && (
+            <span className={css.errorMessage}>{errors.waterHot.message}</span>
+          )}
+        </label>
+
+        <label className={css.label}>
+          Electricity
+          <input
+            type="number"
+            step="1"
+            {...register("electricity")}
+            className={`${css.input} ${errors.electricity ? css.error : ""}`}
+            placeholder={
+              lastReading?.electricity
+                ? `${lastReading.electricity}`
+                : "e.g. 580"
+            }
+          />
+          {errors.electricity && (
+            <span className={css.errorMessage}>{errors.electricity.message}</span>
+          )}
+        </label>
+
+        <button type="submit" className={css.submitBtn}>
+          Send
+        </button>
+      </form>
     </div>
   );
 };

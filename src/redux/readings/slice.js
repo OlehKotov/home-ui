@@ -1,5 +1,9 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
-import { fetchReadingsByApartmentId } from "./operations";
+import {
+  fetchReadingsByApartmentId,
+  updateReadingsByApartmentId,
+} from "./operations";
+import { logoutUser } from "../auth/operations";
 
 const initialState = {
   readings: [],
@@ -16,14 +20,31 @@ const readingsSlice = createSlice({
         state.isLoading = false;
         state.readings = action.payload;
       })
-      .addMatcher(isAnyOf(fetchReadingsByApartmentId.pending), (state) => {
-        state.isLoading = true;
-        state.isError = false;
-      })
-      .addMatcher(isAnyOf(fetchReadingsByApartmentId.rejected), (state) => {
+      .addCase(updateReadingsByApartmentId.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isError = true;
-      });
+        state.readings = action.payload;
+      })
+      .addCase(logoutUser.fulfilled, () => initialState)
+      .addMatcher(
+        isAnyOf(
+          fetchReadingsByApartmentId.pending,
+          updateReadingsByApartmentId.pending
+        ),
+        (state) => {
+          state.isLoading = true;
+          state.isError = false;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          fetchReadingsByApartmentId.rejected,
+          updateReadingsByApartmentId.rejected
+        ),
+        (state) => {
+          state.isLoading = false;
+          state.isError = true;
+        }
+      );
   },
 });
 

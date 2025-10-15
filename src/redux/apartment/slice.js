@@ -1,5 +1,6 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { fetchApartmentByApartmentId } from "./operations";
+import { logoutUser } from "../auth/operations";
 
 const initialState = {
   apartment: [],
@@ -16,6 +17,7 @@ const apartmentSlice = createSlice({
         state.isLoading = false;
         state.apartment = action.payload;
       })
+      .addCase(logoutUser.fulfilled, () => initialState)
       .addMatcher(isAnyOf(fetchApartmentByApartmentId.pending), (state) => {
         state.isLoading = true;
         state.isError = false;

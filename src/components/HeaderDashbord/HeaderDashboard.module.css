@@ -24,4 +24,8 @@
     font-size: 28px;
     line-height: 95%;
   }
+
+  .headerBtn {
+    display: none;
+  }
 }

@@ -58,3 +58,42 @@
   padding-bottom: 40px;
   padding-left: 20px;
 }
+
+.desktopNav {
+    display: none;
+  }
+
+@media (min-width: 1440px) {
+  .desktopNav {
+    display: none;
+  }
+
+  .desktopList {
+    list-style: none;
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+  }
+
+  .menuLink {
+    text-decoration: none;
+    color: #323f47;
+    font-size: 18px;
+    transition: color 0.2s;
+  }
+
+  .menuLink:hover {
+    color: #f4c550;
+  }
+
+  .current {
+    color: #f4c550;
+    font-weight: 500;
+  }
+  
+  .desktopNav {
+    display: block;
+  }
+}

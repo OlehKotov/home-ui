@@ -15,5 +15,5 @@ export const selectDraftPassword = (state) => state.auth.draftUser.password;
 
 export const selectReadings = (state) => state.readings.readings;
 export const selectApartment = (state) => state.apartment.apartment;
-export const selectUser = (state) => state.user.user;
+export const selectInvoices = (state) => state.invoices.invoices;
 

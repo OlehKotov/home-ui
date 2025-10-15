@@ -1,14 +1,17 @@
 import React, { useEffect } from "react";
 import css from "./Overview.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { selectApartment, selectUser, selectUserApartmentId } from "../../redux/selectors";
+import {
+  selectApartment,
+  selectUserApartmentId,
+  selectUserName,
+} from "../../redux/selectors";
 import { fetchApartmentByApartmentId } from "../../redux/apartment/operations";
-import { fetchUserByUserId } from "../../redux/user/operations";
 
 const Overview = () => {
   const dispatch = useDispatch();
   const apartment = useSelector(selectApartment);
-  const user = useSelector(selectUser);
+  const userName = useSelector(selectUserName);
   const apartmentId = useSelector(selectUserApartmentId);
 
   useEffect(() => {
@@ -17,20 +20,16 @@ const Overview = () => {
     }
   }, [dispatch, apartmentId]);
 
-  useEffect(() => {
-    if (apartment.owner) {
-      dispatch(fetchUserByUserId(apartment.owner));
-    }
-  }, [dispatch, apartment.owner]);
-
   return (
     <div className={css.container}>
-      <h2 className={css.title}>My Apartment Info</h2>
-      <ul>
-        <li>Apartment Number - {apartment.apartmentNumber}</li>
-        <li>Floor - {apartment.floor}</li>
-        <li>SquareMeters - {apartment.squareMeters}</li>
-        <li>Owner - {user.name}</li>
+      <h2 className={css.header}>My Apartment Info</h2>
+      <ul className={css.list}>
+        <li className={css.item}>
+          Apartment Number - {apartment.apartmentNumber}
+        </li>
+        <li className={css.item}>Floor - {apartment.floor}</li>
+        <li className={css.item}>Area - {apartment.squareMeters}</li>
+        <li className={css.item}>Owner - {userName}</li>
       </ul>
     </div>
   );

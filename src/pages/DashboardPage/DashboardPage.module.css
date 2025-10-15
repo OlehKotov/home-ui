@@ -13,10 +13,4 @@
 }
 
 @media screen and (min-width: 1440px) {
-  .container {
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 32px;
-}
 }

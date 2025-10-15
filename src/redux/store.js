@@ -4,7 +4,7 @@ import storage from "redux-persist/lib/storage";
 import authReducer from "./auth/slice";
 import readingsReducer from "./readings/slice";
 import apartmentReducer from "./apartment/slice";
-import userReducer from "./user/slice";
+import invoicesReducer from "./invoices/slice";
 
 const persistConfig = {
   key: "auth",
@@ -19,7 +19,7 @@ const store = configureStore({
     auth: persistedUserReducer,
     apartment: apartmentReducer,
     readings: readingsReducer,
-    user: userReducer,
+    invoices: invoicesReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

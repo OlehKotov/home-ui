@@ -9,7 +9,7 @@
 @media (min-width: 768px) {
   .backdrop {
     padding-left: 32px;
-    padding-top: 32px;
+    padding-right: 32px;
     width: 704px;
   }
 }
@@ -17,8 +17,5 @@
 @media (min-width: 1440px) {
   .backdrop {
     width: 100%;
-    height: 736px;
-    margin: 0;
-    flex-shrink: 0;
   }
 }
