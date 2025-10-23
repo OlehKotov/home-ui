@@ -6,24 +6,23 @@ import readingsReducer from "./readings/slice";
 import apartmentReducer from "./apartment/slice";
 import invoicesReducer from "./invoices/slice";
 
-const persistConfig = {
+const authPersistConfig  = {
   key: "auth",
   storage,
   whitelist: ["user", "isLoggedIn", "isDraftUser", "draftUser"],
 };
 
-const persistedUserReducer = persistReducer(persistConfig, authReducer);
+const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
 
 const store = configureStore({
   reducer: {
-    auth: persistedUserReducer,
+    auth: persistedAuthReducer,
     apartment: apartmentReducer,
     readings: readingsReducer,
     invoices: invoicesReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      immutableCheck: false,
       serializableCheck: false,
     }),
 });

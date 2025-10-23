@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { loginUserGoogle } from "../../redux/auth/operations";
 import { selectIsLoading, selectIsLoggedIn } from "../../redux/selectors";
-
+import { forceLogout } from "../../redux/auth/slice";
 
 const GoogleAuth = () => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
@@ -15,6 +15,14 @@ const GoogleAuth = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const code = new URLSearchParams(window.location.search).get("code");
+
+    if (code && isLoggedIn && !sessionStorage.getItem("googleAuthDone")) {
+      dispatch(forceLogout());
+    }
+  }, [isLoggedIn, dispatch]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -46,14 +54,12 @@ const GoogleAuth = () => {
         toast.error("OAuth URL not found");
       }
     } catch (error) {
-      toast.error(`Google auth failed: ${error.message}`
-      )
+      toast.error(`Google auth failed: ${error.message}`);
     }
   };
 
-  if (isLoading || isLoggedIn) {
-    return null; 
-  }
+  const code = new URLSearchParams(window.location.search).get("code");
+  if (isLoading || code) return null;
 
   return (
     <button type="button" className={css.linkGoogle} onClick={handleGoogleAuth}>

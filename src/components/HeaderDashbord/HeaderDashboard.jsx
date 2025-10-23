@@ -22,10 +22,7 @@ const HeaderDashboard = ({ onClick }) => {
           <use xlinkHref={`${sprite}#icon-burger-menu`} />
         </svg>
       </button>
-      
-       <div className={css.desktopMenu}>
-        <Menu isDesktop />
-      </div>
+      <Menu isDesktop />
     </header>
   );
 };
