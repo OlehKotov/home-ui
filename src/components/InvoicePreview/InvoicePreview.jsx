@@ -11,17 +11,34 @@ const InvoicePreview = ({ invoice }) => {
   return (
     <div className={css.invoice}>
       <h2 className={css.invoiceHeader}>Receipt for {invoice.monthYear}</h2>
-      <ul className={css.invoiceList}>
-        <li className={css.invoiceItem}>
-          <strong>Owner:</strong> {invoice.userId.name}
-        </li>
-        <li className={css.invoiceItem}>
-          <strong>Apartment Number:</strong> {apartmentNumber.apartmentNumber}
-        </li>
-        <li className={css.invoiceItem}>
-          <strong>Area:</strong> {apartmentNumber.squareMeters}m2
-        </li>
-      </ul>
+      <div className={css.invoiceListContainer}>
+        <ul className={css.invoiceList}>
+          <li className={css.invoiceItem}>
+            <strong>Owner:</strong> {invoice.userId.name}
+          </li>
+          <li className={css.invoiceItem}>
+            <strong>Apartment Number:</strong> {apartmentNumber.apartmentNumber}
+          </li>
+          <li className={css.invoiceItem}>
+            <strong>Area:</strong> {apartmentNumber.squareMeters}m2
+          </li>
+        </ul>
+
+        <ul className={css.invoiceList}>
+          <li className={css.invoiceItem}>
+            <strong>Beneficiary:</strong> OSBB "ZhK Dom"
+          </li>
+          <li className={css.invoiceItem}>
+            <strong>EDRPOU code:</strong> 39000000
+          </li>
+          <li className={css.invoiceItem}>
+            <strong>Bank of Beneficiary:</strong> PRIVATBANK
+          </li>
+          <li className={css.invoiceItem}>
+            <strong>IBAN:</strong> UA00305299000002600000000000
+          </li>
+        </ul>
+      </div>
 
       <table className={css.table}>
         <thead>
@@ -65,21 +82,6 @@ const InvoicePreview = ({ invoice }) => {
           <strong>To pay: {invoice.toPay.toFixed(2)} ₴</strong>
         </p>
       </div>
-
-      <ul className={css.invoiceList}>
-        <li className={css.invoiceItem}>
-          <strong>Beneficiary:</strong> OSBB "ZhK Parus"
-        </li>
-        <li className={css.invoiceItem}>
-          <strong>EDRPOU code:</strong> 39050771
-        </li>
-        <li className={css.invoiceItem}>
-          <strong>Bank of Beneficiary:</strong> PrivatBank
-        </li>
-        <li className={css.invoiceItem}>
-          <strong>IBAN:</strong> UA633052990000026002045906483
-        </li>
-      </ul>
     </div>
   );
 };

@@ -1,94 +1,66 @@
-
-// import { jsPDF } from "jspdf";
-
-// export const generateInvoicePDF = (invoice, apartment) => {
-//   const doc = new jsPDF();
-
-//   doc.setFontSize(18);
-//   console.log(invoice.monthYear);
-  
-//   doc.text(`Invoice for ${invoice.monthYear}`, 105, 20, { align: "center" });
-
-//   doc.setFontSize(12);
-//   doc.text(`Owner: ${invoice.userId.name}`, 20, 40);
-//   doc.text(`Email: ${invoice.userId.email}`, 20, 48);
-//   doc.text(`Apartment number: ${apartment.apartmentNumber}`, 20, 56);
-//   doc.text(`Area: ${apartment.squareMeters}`, 20, 64);
-
-//   let y = 75;
-//   doc.text("Services:", 20, y);
-//   y += 10;
-
-//   invoice.services.forEach((s) => {
-//     doc.text(
-//       `${s.name}: ${s.prev} - ${s.curr} × ${s.tariff} UAH = ${s.charged.toFixed(2)} UAH`,
-//       25,
-//       y
-//     );
-//     y += 8;
-//   });
-
-//   y += 8;
-//   doc.text(`Maintenance: ${invoice.maintenance.value}m3 × ${invoice.maintenance.tariff} UAH = ${invoice.maintenance.charged.toFixed(2)} UAH`, 25, y);
-//   y += 8;
-//   doc.text(`Electricity (public, kWh)): ${invoice.publicElectricity.value} × ${invoice.publicElectricity.tariff} UAH = ${invoice.publicElectricity.charged.toFixed(2)} UAH`, 25, y);
-
-//   y += 15;
-//   doc.text(`Total amount: ${invoice.totalAmount.toFixed(2)} UAH`, 20, y);
-//   y += 8;
-//   doc.text(`Debt: ${invoice.debt.toFixed(2)} UAH`, 20, y);
-//   y += 8;
-//   doc.text(`To pay: ${invoice.toPay.toFixed(2)} UAH`, 20, y);
-
-//   window.open(doc.output("bloburl"));
-// };
-
 import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export const generateInvoicePDF = (invoice, apartment) => {
   const doc = new jsPDF();
 
-
   doc.setFontSize(18);
   doc.text(`Invoice for ${invoice.monthYear}`, 105, 20, { align: "center" });
-
 
   doc.setFontSize(12);
   doc.text(`Owner: ${invoice.userId.name}`, 20, 40);
   doc.text(`Email: ${invoice.userId.email}`, 20, 48);
   doc.text(`Apartment number: ${apartment.apartmentNumber}`, 20, 56);
 
+  const rightX = 120;
+  doc.text(`Beneficiary: OSBB "ZhK Dom"`, rightX, 40);
+  doc.text(`EDRPOU code: 39000000`, rightX, 48);
+  doc.text(`Bank of Beneficiary: PRIVATBANK`, rightX, 56);
+  doc.text(`IBAN: UA00305299000002600000000000`, rightX, 64);
 
-  let y = 70;
-  doc.setFontSize(13);
-  doc.text("Services:", 20, y);
-  y += 10;
+  const tableData = invoice.services.map((s) => [
+    s.name,
+    s.tariff.toFixed(2),
+    `${s.prev} - ${s.curr}`,
+    s.charged.toFixed(2),
+  ]);
 
-  doc.setFontSize(12);
-  invoice.services.forEach((s) => {
-    doc.text(
-      `${s.name}: ${s.prev} - ${s.curr} × ${s.tariff} UAH = ${s.charged.toFixed(2)} UAH`,
-      25,
-      y
-    );
-    y += 8;
+  tableData.push([
+    "Maintenance",
+    invoice.maintenance.tariff.toFixed(2),
+    invoice.maintenance.value.toString(),
+    invoice.maintenance.charged.toFixed(2),
+  ]);
+  tableData.push([
+    "Electricity (public)",
+    invoice.publicElectricity.tariff.toFixed(2),
+    invoice.publicElectricity.value.toString(),
+    invoice.publicElectricity.charged.toFixed(2),
+  ]);
+
+  autoTable(doc, {
+    startY: 80,
+    head: [["Service", "Tariff (UAH)", "Readings", "Amount (UAH)"]],
+    body: tableData,
+    theme: "striped",
+    styles: {
+      fontSize: 11,
+      textColor: [0, 0, 0],
+    },
+    headStyles: {
+      fillColor: [220, 220, 220],
+      textColor: [0, 0, 0],
+      halign: "center",
+    },
+    columnStyles: {
+      0: { cellWidth: 60 },
+      1: { halign: "center" },
+      2: { halign: "center" },
+      3: { halign: "center" },
+    },
   });
 
-  y += 10;
-  doc.text(
-    `Maintenance: ${invoice.maintenance.value} × ${invoice.maintenance.tariff} UAH = ${invoice.maintenance.charged.toFixed(2)} UAH`,
-    25,
-    y
-  );
-  y += 8;
-  doc.text(
-    `Electricity (public): ${invoice.publicElectricity.value} × ${invoice.publicElectricity.tariff} UAH = ${invoice.publicElectricity.charged.toFixed(2)} UAH`,
-    25,
-    y
-  );
-
-
-  y += 15;
+  let y = doc.lastAutoTable.finalY + 10;
   doc.setFontSize(13);
   doc.text("Summary:", 20, y);
   y += 10;
@@ -98,29 +70,19 @@ export const generateInvoicePDF = (invoice, apartment) => {
   y += 8;
   doc.text(`Debt: ${invoice.debt.toFixed(2)} UAH`, 25, y);
   y += 8;
+
+  doc.setFont("helvetica", "bold");
   doc.text(`To pay: ${invoice.toPay.toFixed(2)} UAH`, 25, y);
+  doc.setFont("helvetica", "normal");
 
-  
-  y += 20;
-  doc.setFontSize(13);
-  doc.text("Payment details:", 20, y);
-  y += 10;
-
-   doc.setFontSize(12);
-  doc.text(`Beneficiary: OSBB "ZhK Parus"`, 25, y);
-  y += 8;
-  doc.text(`EDRPOU code: 39050771`, 25, y);
-  y += 8;
-  doc.text(`Bank of Beneficiary: PrivatBank`, 25, y);
-  y += 8;
-  doc.text(`IBAN: UA633052990000026002045906483`, 25, y);
-
- 
   y += 20;
   doc.setFontSize(10);
-  doc.text("Please make the payment before the 10th of the next month.", 105, y, { align: "center" });
-
+  doc.text(
+    "Please make the payment before the 10th of the next month.",
+    105,
+    y,
+    { align: "center" }
+  );
 
   window.open(doc.output("bloburl"));
 };
-

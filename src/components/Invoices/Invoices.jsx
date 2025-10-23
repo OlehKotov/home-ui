@@ -44,7 +44,9 @@ const Invoices = () => {
       {invoices.map((invoice) => (
         <tr
           key={invoice._id}
-          className={css.clickableRow}
+          className={`${css.clickableRow} ${
+    selectedInvoice?._id === invoice._id ? css.current : ""
+  }`}
           onClick={() => setSelectedInvoice(invoice)}
         >
           <td>{invoice.monthYear}</td>

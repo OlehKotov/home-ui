@@ -38,6 +38,67 @@
   font-size: 16px;
 }
 
-.invoiceList {
-    margin-top: 10px;
+.invoiceListContainer {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (min-width: 768px) {
+  .invoice {
+    font-size: 16px;
+    padding: 24px;
+  }
+
+  .invoiceHeader {
+    font-size: 24px;
+  }
+
+  .table {
+    width: 592px;
+    margin-top: 15px;
+  }
+
+  .table th,
+  .table td {
+    padding: 6px;
+  }
+
+  .total {
+    font-size: 18px;
+  }
+
+  .invoiceListContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .invoice {
+    font-size: 20px;
+    padding: 28px;
+  }
+
+  .invoiceHeader {
+    font-size: 28px;
+  }
+
+  .table {
+    width: 1256px;
+    margin-top: 20px;
+  }
+
+  .table th,
+  .table td {
+    padding: 10px;
+    text-align: left;
+  }
+
+  .total {
+    font-size: 24px;
+  }
 }
