@@ -3,6 +3,7 @@ export const selectIsLoading = (state) =>
   state.auth.isLoading || state.readings.isLoading || state.apartment.isLoading;
 export const selectIsError = (state) => state.auth.isError || state.readings.isError || state.apartment.isError;
 export const selectIsDraftUser = (state) => state.auth.isDraftUser;
+export const selectUser = (state) => state.auth.user;
 export const selectUserName = (state) => state.auth.user.name;
 export const selectUserEmail = (state) => state.auth.user.email;
 export const selectUserPass = (state) => state.auth.user.password;

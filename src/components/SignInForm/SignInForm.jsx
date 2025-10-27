@@ -45,7 +45,7 @@ const SignInForm = () => {
       toast.success("Login successful!");
 
       reset();
-      navigate("/dashboard");
+      navigate("/redirect");
     } catch (error) {
       toast.error(error);
     }

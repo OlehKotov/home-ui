@@ -23,6 +23,9 @@ import ResetPasswordRoute from "./ResetPasswordRoute";
 import Readings from "./Readings/Readings";
 import Overview from "./Overview/Overview";
 import Invoices from "./Invoices/Invoices";
+import AdminRoute from "./AdminRoute";
+import AdminPage from "../pages/AdminPage/AdminPage";
+import RoleRedirect from "./RoleRedirect";
 
 function App() {
   const isLoading = useSelector(selectIsLoading);
@@ -86,6 +89,15 @@ function App() {
               <Route path="readings" element={<Readings />} />
               <Route path="invoices" element={<Invoices />} />
             </Route>
+            <Route path="/redirect" element={<RoleRedirect />} />
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <AdminPage />
+                </AdminRoute>
+              }
+            />
             <Route path="/check-email" element={<CheckEmailPage />} />
             <Route
               path="/reset-password"
