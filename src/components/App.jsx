@@ -26,6 +26,7 @@ import Invoices from "./Invoices/Invoices";
 import AdminRoute from "./AdminRoute";
 import AdminPage from "../pages/AdminPage/AdminPage";
 import RoleRedirect from "./RoleRedirect";
+import ApartmentPage from "../pages/ApartmentPage/ApartmentPage";
 
 function App() {
   const isLoading = useSelector(selectIsLoading);
@@ -97,7 +98,9 @@ function App() {
                   <AdminPage />
                 </AdminRoute>
               }
-            />
+            >
+              <Route path="flat/:id" element={<ApartmentPage />} />
+            </Route>
             <Route path="/check-email" element={<CheckEmailPage />} />
             <Route
               path="/reset-password"

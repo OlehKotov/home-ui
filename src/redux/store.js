@@ -5,6 +5,7 @@ import authReducer from "./auth/slice";
 import readingsReducer from "./readings/slice";
 import apartmentReducer from "./apartment/slice";
 import invoicesReducer from "./invoices/slice";
+import userReducer from "./user/slice";
 
 const authPersistConfig  = {
   key: "auth",
@@ -20,6 +21,7 @@ const store = configureStore({
     apartment: apartmentReducer,
     readings: readingsReducer,
     invoices: invoicesReducer,
+    user: userReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

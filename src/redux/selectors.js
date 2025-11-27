@@ -1,3 +1,4 @@
+
 export const selectIsLoggedIn = (state) => state.auth.isLoggedIn;
 export const selectIsLoading = (state) =>
   state.auth.isLoading || state.readings.isLoading || state.apartment.isLoading;
@@ -15,6 +16,14 @@ export const selectDraftEmail = (state) => state.auth.draftUser.email;
 export const selectDraftPassword = (state) => state.auth.draftUser.password;
 
 export const selectReadings = (state) => state.readings.readings;
-export const selectApartment = (state) => state.apartment.apartment;
+
+// export const selectApartmentOwner = (state) => state.apartment.apartment.owner;
+export const selectApartmentOwner = state =>
+  state.apartment.apartment?.owner ?? null;
+
 export const selectInvoices = (state) => state.invoices.invoices;
 
+export const selectOwner = (state) => state.user.user;
+
+export const selectApartments = state => state.apartment.apartments;
+export const selectApartment = state => state.apartment.apartment;

@@ -1,9 +1,10 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
-import { fetchApartmentByApartmentId } from "./operations";
+import { fetchApartment, fetchApartmentByApartmentId } from "./operations";
 import { logoutUser } from "../auth/operations";
 
 const initialState = {
-  apartment: [],
+  apartments: [],
+  apartment: null,
   isLoading: false,
   isError: false,
 };
@@ -13,16 +14,20 @@ const apartmentSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
+    .addCase(fetchApartment.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.apartments = action.payload.data;
+      })
       .addCase(fetchApartmentByApartmentId.fulfilled, (state, action) => {
         state.isLoading = false;
         state.apartment = action.payload;
       })
       .addCase(logoutUser.fulfilled, () => initialState)
-      .addMatcher(isAnyOf(fetchApartmentByApartmentId.pending), (state) => {
+      .addMatcher(isAnyOf(fetchApartmentByApartmentId.pending, fetchApartment.pending, logoutUser.pending), (state) => {
         state.isLoading = true;
         state.isError = false;
       })
-      .addMatcher(isAnyOf(fetchApartmentByApartmentId.rejected), (state) => {
+      .addMatcher(isAnyOf(fetchApartmentByApartmentId.rejected, fetchApartment.rejected, logoutUser.rejected), (state) => {
         state.isLoading = false;
         state.isError = true;
       });

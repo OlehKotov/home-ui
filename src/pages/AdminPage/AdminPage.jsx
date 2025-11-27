@@ -1,14 +1,15 @@
-import React from 'react'
-import LogoutBtn from '../../components/LogoutBtn/LogoutBtn'
+import React from "react";
+import DocumentTitle from "../../components/DocumentTitle";
+import css from "./AdminPage.module.css";
+import AdminPanel from "../../components/AdminPanel/AdminPanel";
 
 const AdminPage = () => {
   return (
-     <div>
-      <h1>Admin Panel</h1>
-      <p>Welcome, admin!</p>
-      <LogoutBtn />
+    <div className={css.container}>
+      <DocumentTitle>Home Track - Admin Page</DocumentTitle>
+      <AdminPanel />
     </div>
-  )
-}
+  );
+};
 
-export default AdminPage
+export default AdminPage;
